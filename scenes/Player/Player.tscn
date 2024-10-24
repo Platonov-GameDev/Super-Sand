@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://ct6nrndmcmls"]
+
+[ext_resource type="Script" path="res://scenes/Player/Player.gd" id="1_j606p"]
+[ext_resource type="Script" path="res://scenes/Player/BoardBase.gd" id="2_jddbh"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_yjufc"]
+size = Vector3(0.6, 1.4, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ewnj3"]
+size = Vector3(0.6, 0.1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gggbb"]
+margin = 10.0
+size = Vector3(0.6, 0.1, 2)
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_j606p")
+
+[node name="BoardBase" type="RigidBody3D" parent="."]
+collision_layer = 2
+center_of_mass_mode = 1
+inertia = Vector3(1, 1, 1)
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 4
+linear_velocity = Vector3(0, 0, -30)
+angular_damp = 9.131
+script = ExtResource("2_jddbh")
+
+[node name="Camera3D" type="Camera3D" parent="BoardBase"]
+transform = Transform3D(1, 1.05514e-08, -1.15725e-08, -7.19671e-09, 0.965926, 0.258819, 1.39091e-08, -0.258819, 0.965926, 0, 3, 3)
+fov = 90.0
+
+[node name="BodyMeshInstance3D" type="MeshInstance3D" parent="BoardBase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_yjufc")
+
+[node name="PushCooldownTimer" type="Timer" parent="BoardBase"]
+wait_time = 0.7
+one_shot = true
+
+[node name="BoardMeshInstance3D" type="MeshInstance3D" parent="BoardBase"]
+mesh = SubResource("BoxMesh_ewnj3")
+
+[node name="BoardCollisionShape3D" type="CollisionShape3D" parent="BoardBase"]
+shape = SubResource("BoxShape3D_gggbb")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="BoardBase"]
+shape = SubResource("BoxShape3D_gggbb")
+target_position = Vector3(0, 0, 0)
+debug_shape_custom_color = Color(1, 0, 0, 1)

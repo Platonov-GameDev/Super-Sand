@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=3 uid="uid://dkgci7mnmnh8"]
+
+[ext_resource type="Script" path="res://addons/curvemesh3d/curvemesh3d.gd" id="1_6fql6"]
+[ext_resource type="Script" path="res://scenes/WindCurrent/WindCurrent.gd" id="1_nsrik"]
+[ext_resource type="Texture2D" uid="uid://cucbredklyo0h" path="res://addons/kenney_prototype_textures/light/texture_01.png" id="2_cqprp"]
+
+[sub_resource type="Curve3D" id="Curve3D_qos5m"]
+resource_local_to_scene = true
+bake_interval = 0.1
+_data = {
+"points": PackedVector3Array(-0.6, -0.46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.6, 0.46, 0, 200, 0, 0.649),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_ilqon"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_il2qt"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+disable_receive_shadows = true
+grow = true
+grow_amount = -3.752
+distance_fade_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e80vv"]
+next_pass = SubResource("StandardMaterial3D_il2qt")
+transparency = 1
+cull_mode = 2
+specular_mode = 1
+albedo_color = Color(1, 1, 1, 0.211765)
+albedo_texture = ExtResource("2_cqprp")
+roughness = 0.5
+refraction_scale = 1.0
+disable_receive_shadows = true
+grow = true
+grow_amount = 16.0
+distance_fade_mode = 2
+distance_fade_min_distance = 15.0
+distance_fade_max_distance = 50.0
+
+[node name="WindCurrent" type="Node3D"]
+script = ExtResource("1_nsrik")
+
+[node name="CurveMesh3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_qos5m")
+script = ExtResource("1_6fql6")
+radius = 4.0
+radius_profile = SubResource("Curve_ilqon")
+material = SubResource("StandardMaterial3D_e80vv")

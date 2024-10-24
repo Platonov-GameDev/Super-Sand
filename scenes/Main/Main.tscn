@@ -1,0 +1,49 @@
+[gd_scene load_steps=9 format=3 uid="uid://cxtgiqwlcw52k"]
+
+[ext_resource type="PackedScene" uid="uid://bp8x3afhlshjf" path="res://scenes/DesertTerrainChunk/DesertTerrainChunk.tscn" id="1_0im6o"]
+[ext_resource type="Script" path="res://scenes/Main/Main.gd" id="1_aa2qk"]
+[ext_resource type="PackedScene" uid="uid://ct6nrndmcmls" path="res://scenes/Player/Player.tscn" id="2_e3xip"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_muceq"]
+sky_top_color = Color(0.0588235, 0.678431, 0.901961, 1)
+sky_horizon_color = Color(0.836846, 0.934263, 0.993453, 1)
+ground_bottom_color = Color(0.431373, 0.678431, 0.901961, 1)
+ground_horizon_color = Color(0.836846, 0.934263, 0.993453, 1)
+ground_curve = 1.2364
+
+[sub_resource type="Sky" id="Sky_2bola"]
+sky_material = SubResource("ProceduralSkyMaterial_muceq")
+
+[sub_resource type="Environment" id="Environment_qsacj"]
+background_mode = 2
+sky = SubResource("Sky_2bola")
+ambient_light_source = 3
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sj33r"]
+friction = 0.3
+bounce = 0.9
+absorbent = true
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_p06ub"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_aa2qk")
+
+[node name="DesertTerrainChunk" parent="." instance=ExtResource("1_0im6o")]
+transform = Transform3D(1, 0, 0, 0, 0.866026, 0.5, 0, -0.5, 0.866026, 0, 0, 0)
+
+[node name="Player" parent="." instance=ExtResource("2_e3xip")]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 150, -40, -50)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.651357, 0.425194, -0.628447, 0.00761447, 0.831863, 0.554929, 0.758734, 0.356671, -0.545077, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_qsacj")
+
+[node name="TerrainCollisionBody" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_sj33r")
+
+[node name="TerrainCollisionShape" type="CollisionShape3D" parent="TerrainCollisionBody"]
+shape = SubResource("ConcavePolygonShape3D_p06ub")

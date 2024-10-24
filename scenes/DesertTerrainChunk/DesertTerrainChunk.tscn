@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://bp8x3afhlshjf"]
+
+[ext_resource type="Script" path="res://scenes/DesertTerrainChunk/DesertTerrainChunk.gd" id="1_6iepf"]
+[ext_resource type="Texture2D" uid="uid://bk10fb3l5a0p3" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="2_6edk1"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_abl2p"]
+friction = 0.4
+bounce = 0.9
+absorbent = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_no8ot"]
+noise_type = 2
+frequency = 0.04
+fractal_type = 0
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1o024"]
+noise_type = 0
+frequency = 0.04
+fractal_type = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0wif"]
+albedo_texture = ExtResource("2_6edk1")
+uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lplwh"]
+size = Vector3(1, 500, 1)
+
+[node name="DesertTerrainChunk" type="StaticBody3D"]
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_abl2p")
+script = ExtResource("1_6iepf")
+RIDGE_NOISE = SubResource("FastNoiseLite_no8ot")
+RIDGE_HEIGHT_NOISE = SubResource("FastNoiseLite_1o024")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_r0wif")
+skeleton = NodePath("../..")
+
+[node name="PlayerDetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="PlayerDetectionCollision" type="CollisionShape3D" parent="PlayerDetectionArea"]
+shape = SubResource("BoxShape3D_lplwh")
