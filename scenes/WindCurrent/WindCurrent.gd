@@ -4,7 +4,7 @@ class_name WindCurrent
 
 @onready var curve_mesh_3d: CurveMesh3D = $CurveMesh3D
 
-var TESSELATION_INTERVAL := 100
+var TESSELATION_INTERVAL := Global.STRUCTURE_SIZE
 
 var rng: RandomNumberGenerator
 var curve_mesh: CurveMesh3D
@@ -54,7 +54,7 @@ func _get_random_wind_point(start_point = null):
 
 
 func _physics_process(_delta):
-	var local_player_position = Global.player.position * curve_mesh_3d.global_transform
+	var local_player_position = Global.player.board_base.position * curve_mesh_3d.global_transform
 	var closest_point_to_player = (curve_mesh_3d.curve.get_closest_point(local_player_position))
 	var distance_to_player = (local_player_position - closest_point_to_player).length()
 	

@@ -14,7 +14,7 @@ var VERTICE_SIZE := GENERATOR_RADIUS * RESOLUTION
 var RIDGE_NOISE_FREQUENCY := 0.004
 var RIDGE_HEIGHT_NOISE_FREQUENCY := 0.004
 var WIND_CURRENT_COUNT := 1
-var ANGLE := 0.5
+var ANGLE := 0.75
 
 var current_wind_boost := 0.0
 var terrain_seed: int
