@@ -23,8 +23,8 @@ inertia = Vector3(1, 1, 1)
 continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 4
-linear_velocity = Vector3(0, 0, -30)
-angular_damp = 9.131
+linear_velocity = Vector3(0, 0, -60)
+angular_damp = 9.0
 script = ExtResource("2_jddbh")
 
 [node name="Camera3D" type="Camera3D" parent="BoardBase"]
@@ -45,7 +45,6 @@ mesh = SubResource("BoxMesh_ewnj3")
 [node name="BoardCollisionShape3D" type="CollisionShape3D" parent="BoardBase"]
 shape = SubResource("BoxShape3D_gggbb")
 
-[node name="ShapeCast3D" type="ShapeCast3D" parent="BoardBase"]
-shape = SubResource("BoxShape3D_gggbb")
-target_position = Vector3(0, 0, 0)
-debug_shape_custom_color = Color(1, 0, 0, 1)
+[node name="AirTimeTimer" type="Timer" parent="BoardBase"]
+wait_time = 0.1
+one_shot = true

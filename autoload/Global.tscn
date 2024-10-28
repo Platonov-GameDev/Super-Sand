@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://5i54q4xuogfi"]
+
+[ext_resource type="Script" path="res://autoload/Global.gd" id="1_3ocrx"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_exw8t"]
+noise_type = 2
+frequency = 0.04
+fractal_type = 0
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g5foq"]
+noise_type = 0
+frequency = 0.04
+fractal_type = 0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0tq7o"]
+frequency = 1.0
+
+[node name="Global" type="Node"]
+script = ExtResource("1_3ocrx")
+RIDGE_NOISE = SubResource("FastNoiseLite_exw8t")
+RIDGE_HEIGHT_NOISE = SubResource("FastNoiseLite_g5foq")
+STRUCTURE_NOISE = SubResource("FastNoiseLite_0tq7o")

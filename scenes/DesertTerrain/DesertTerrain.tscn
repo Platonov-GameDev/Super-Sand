@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwwuqs51l3ucn"]
+
+[ext_resource type="Script" path="res://scenes/DesertTerrain/DesertTerrain.gd" id="1_p45mr"]
+[ext_resource type="PackedScene" uid="uid://dkgci7mnmnh8" path="res://scenes/WindCurrent/WindCurrent.tscn" id="2_ctrp8"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pyvpe"]
+friction = 0.4
+bounce = 0.9
+absorbent = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_76743"]
+height = 1000.0
+radius = 50.0
+
+[node name="DesertTerrain" type="Node3D"]
+script = ExtResource("1_p45mr")
+physics_material = SubResource("PhysicsMaterial_pyvpe")
+wind_current_scene = ExtResource("2_ctrp8")
+
+[node name="PlayerDetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="PlayerDetectionShape" type="CollisionShape3D" parent="PlayerDetectionArea"]
+shape = SubResource("CylinderShape3D_76743")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]

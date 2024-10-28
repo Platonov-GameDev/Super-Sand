@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://autoload/Global.gd"
+Global="*res://autoload/Global.tscn"
 
 [display]
 
@@ -75,4 +75,3 @@ Reload={
 jolt_3d/solver/active_edge_threshold=1.5708
 jolt_3d/solver/contact_speculative_distance=0.01
 jolt_3d/solver/contact_allowed_penetration=0.01
-jolt_3d/limits/max_angular_velocity=500.0

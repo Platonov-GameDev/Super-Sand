@@ -1,37 +1,31 @@
 extends Node
 
 
-var terrain_chunks: Array[DesertTerrainChunk] = []
-var player_position: Vector3
+@export var RIDGE_NOISE: FastNoiseLite
+@export var RIDGE_HEIGHT_NOISE: FastNoiseLite
+@export var STRUCTURE_NOISE: FastNoiseLite
+
+var GENERATOR_RADIUS := 100
+var STRUCTURE_SIZE := 100
+var RESOLUTION := .5
+var HEIGHT_SCALE := 50.0
+var MESH_STEP := 1.0 / RESOLUTION
+var VERTICE_SIZE := GENERATOR_RADIUS * RESOLUTION
+var RIDGE_NOISE_FREQUENCY := 0.004
+var RIDGE_HEIGHT_NOISE_FREQUENCY := 0.004
+var WIND_CURRENT_COUNT := 1
+var ANGLE := 0.5
+
 var current_wind_boost := 0.0
-
 var terrain_seed: int
-
-signal terrain_collision_shape_updated(new_collision_shape_vertices)
+var player: Player
 
 
 func _ready():
 	reset()
-
-
-func add_terrain_chunk(chunk: DesertTerrainChunk):
-	terrain_chunks.append(chunk)
-	_generate_new_terrain_collision_shape()
-
-
-func remove_terrain_chunk(chunk: DesertTerrainChunk):
-	terrain_chunks.erase(chunk)
-	_generate_new_terrain_collision_shape()
-
-
-func _generate_new_terrain_collision_shape():
-	var collision_shape_vertices = PackedVector3Array()
-	for chunk in terrain_chunks:
-		collision_shape_vertices.append_array(chunk.collision_shape_vertices)
 	
-	var concave_polygon_shape = ConcavePolygonShape3D.new()
-	concave_polygon_shape.set_faces(collision_shape_vertices)
-	terrain_collision_shape_updated.emit(collision_shape_vertices)
+	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
+	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY
 
 
 func _physics_process(delta):
@@ -40,8 +34,67 @@ func _physics_process(delta):
 
 func reset():
 	terrain_seed = Time.get_unix_time_from_system()
+	
+	RIDGE_NOISE.seed = terrain_seed
+	RIDGE_HEIGHT_NOISE.seed = terrain_seed
+	STRUCTURE_NOISE.seed = terrain_seed
 
 
 func reload():
 	reset()
 	get_tree().reload_current_scene()
+
+
+func get_terrain_height_from_x_z(x: float, z: float) -> float:
+	var noise_x = -z
+	var noise_y = x
+	var ridge_noise_value = (1 + RIDGE_NOISE.get_noise_2d(noise_x, noise_y))
+	var ridge_height_noise_value = RIDGE_HEIGHT_NOISE.get_noise_2d(noise_x, noise_y) / 2 + 0.5
+	return clampf(
+		 ridge_noise_value * ridge_height_noise_value,
+		0, 1
+	) * HEIGHT_SCALE - HEIGHT_SCALE + z * ANGLE
+
+
+func get_terrain_point_from_x_z(x: float, z: float) -> Vector3:
+	var point := Vector3(x, 0, z)
+	point.y = get_terrain_height_from_x_z(x, z)
+	return point
+
+
+func get_structure_value_from_x_z(x: float, z: float) -> float:
+	return STRUCTURE_NOISE.get_noise_2d(x, z)
+
+
+func add_quad_to_vertex_array(
+	array: PackedVector3Array,
+	bot_left: Vector3,
+	bot_right: Vector3,
+	top_left: Vector3,
+	top_right: Vector3,
+):
+	array.append(bot_left)
+	array.append(top_left)
+	array.append(top_right)
+	
+	array.append(bot_left)
+	array.append(top_right)
+	array.append(bot_right)
+
+
+func add_quad_to_normals_array(
+	array: PackedVector3Array,
+	bot_left: Vector3,
+	bot_right: Vector3,
+	top_left: Vector3,
+	top_right: Vector3,
+):
+	var normal1 = Plane(bot_left, top_left, top_right).normal
+	array.append(normal1)
+	array.append(normal1)
+	array.append(normal1)
+	
+	var normal2 = Plane(bot_left, top_right, bot_right).normal
+	array.append(normal2)
+	array.append(normal2)
+	array.append(normal2)
