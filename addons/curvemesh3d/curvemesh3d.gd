@@ -143,7 +143,7 @@ static func cm_get_curve_length(plist: PackedVector3Array) -> float:
 # VIRTUAL METHODS
 #---------------------------------------------------------------------------------------------------
 
-func _ready() -> void:
+func _init() -> void:
 	cm_clear_duplicated_internal_children()
 	if(!cm_st): 
 		cm_st = SurfaceTool.new()

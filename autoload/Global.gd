@@ -5,7 +5,7 @@ extends Node
 @export var RIDGE_HEIGHT_NOISE: FastNoiseLite
 @export var STRUCTURE_NOISE: FastNoiseLite
 
-var GENERATOR_RADIUS := 100
+var GENERATOR_RADIUS := 800
 var STRUCTURE_SIZE := 100
 var RESOLUTION := .5
 var HEIGHT_SCALE := 50.0

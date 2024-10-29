@@ -2,16 +2,12 @@ extends Node3D
 class_name WindCurrent
 
 
-@onready var curve_mesh_3d: CurveMesh3D = $CurveMesh3D
+@export var mesh_material: StandardMaterial3D
 
 var TESSELATION_INTERVAL := Global.STRUCTURE_SIZE
 
 var rng: RandomNumberGenerator
 var curve_mesh: CurveMesh3D
-
-
-func _ready():
-	generate_curve()
 
 
 func generate_curve():
@@ -35,10 +31,16 @@ func generate_curve():
 				position.x + new_internal_point.x, position.z + new_internal_point.z)
 			curve_points_array.append(new_internal_point)
 	
-	curve_mesh_3d.curve.clear_points()
+	var curve = Curve3D.new()
+	curve.resource_local_to_scene = true
 	for point in curve_points_array:
-		curve_mesh_3d.curve.add_point(point)
-	#add_child(curve_mesh_3d)
+		curve.add_point(point)
+	curve_mesh = CurveMesh3D.new()
+	curve_mesh.curve = curve
+	curve_mesh.curve.bake_interval = TESSELATION_INTERVAL
+	curve_mesh.material = mesh_material
+	curve_mesh.cm_on_curve_changed()
+	add_child(curve_mesh)
 
 
 func _get_random_wind_point(start_point = null):
@@ -54,8 +56,8 @@ func _get_random_wind_point(start_point = null):
 
 
 func _physics_process(_delta):
-	var local_player_position = Global.player.board_base.position * curve_mesh_3d.global_transform
-	var closest_point_to_player = (curve_mesh_3d.curve.get_closest_point(local_player_position))
+	var local_player_position = Global.player.board_base.position * curve_mesh.global_transform
+	var closest_point_to_player = (curve_mesh.curve.get_closest_point(local_player_position))
 	var distance_to_player = (local_player_position - closest_point_to_player).length()
 	
 	if distance_to_player <= 20:
