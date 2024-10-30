@@ -13,7 +13,7 @@ extends Node3D
 @onready var terrain_body: StaticBody3D = $TerrainBody
 
 var ACTIVE_COLLISION_RADIUS := 6
-var ACTIVE_STRUCTURE_RADIUS := 400
+var ACTIVE_STRUCTURE_RADIUS := 800
 
 var current_terrain_mesh: MeshInstance3D
 var current_terrain_shape: CollisionShape3D
