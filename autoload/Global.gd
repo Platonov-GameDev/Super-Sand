@@ -6,7 +6,7 @@ extends Node
 @export var STRUCTURE_NOISE: FastNoiseLite
 
 var GENERATOR_RADIUS := 800
-var STRUCTURE_SIZE := 200
+var STRUCTURE_SIZE := 150
 var RESOLUTION := .5
 var HEIGHT_SCALE := 50.0
 var MESH_STEP := 1.0 / RESOLUTION

@@ -73,3 +73,4 @@ Reload={
 3d/physics_engine="JoltPhysics3D"
 3d/default_gravity=50.0
 jolt_3d/solver/active_edge_threshold=1.5708
+jolt_3d/limits/max_linear_velocity=70.0

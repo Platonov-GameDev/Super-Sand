@@ -4,7 +4,7 @@ class_name WindCurrent
 
 @export var mesh_material: StandardMaterial3D
 
-var TESSELATION_INTERVAL := Global.STRUCTURE_SIZE
+var TESSELATION_INTERVAL := Global.MESH_STEP
 
 var rng: RandomNumberGenerator
 var curve_mesh: CurveMesh3D
@@ -27,8 +27,11 @@ func generate_curve():
 		else:
 			var new_internal_point = (
 				start_point + tesselation_step_direction * TESSELATION_INTERVAL * j)
-			new_internal_point.y = Global.get_terrain_height_from_x_z(
-				position.x + new_internal_point.x, position.z + new_internal_point.z)
+			new_internal_point.y = (
+				Global.get_terrain_height_from_x_z(
+					position.x + new_internal_point.x, position.z + new_internal_point.z)
+				- position.y
+				)
 			curve_points_array.append(new_internal_point)
 	
 	var curve = Curve3D.new()
