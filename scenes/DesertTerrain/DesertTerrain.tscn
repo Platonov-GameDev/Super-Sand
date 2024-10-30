@@ -10,7 +10,7 @@ uv1_triplanar = true
 uv1_world_triplanar = true
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pyvpe"]
-friction = 0.4
+friction = 0.6
 bounce = 0.9
 absorbent = true
 

@@ -71,5 +71,5 @@ Reload={
 [physics]
 
 3d/physics_engine="JoltPhysics3D"
-3d/default_gravity=30.0
+3d/default_gravity=50.0
 jolt_3d/solver/active_edge_threshold=1.5708
