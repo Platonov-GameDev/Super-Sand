@@ -23,7 +23,7 @@ inertia = Vector3(1, 1, 1)
 continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 4
-angular_damp = 9.0
+angular_damp = 6.0
 script = ExtResource("2_jddbh")
 
 [node name="Camera3D" type="Camera3D" parent="BoardBase"]
