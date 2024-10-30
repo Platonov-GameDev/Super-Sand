@@ -3,7 +3,7 @@ extends RigidBody3D
 
 @onready var air_time_timer: Timer = $AirTimeTimer
 
-var WIND_BOOST := 1
+var WIND_BOOST := .8
 
 var is_on_ground := false
 var was_on_ground := false
