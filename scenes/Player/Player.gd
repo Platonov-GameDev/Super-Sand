@@ -7,6 +7,11 @@ class_name Player
 var LEAN_CONTROL := 20
 
 
+func _ready():
+	Global.player = self
+	Global.init_player()
+
+
 func _physics_process(_delta):
 	var air_control_input = Input.get_vector("Move right", "Move left", "Move forward", "Move back")
 	board_base.apply_torque(board_base.global_basis.x * air_control_input.y * LEAN_CONTROL)

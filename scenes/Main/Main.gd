@@ -15,8 +15,6 @@ func _ready():
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
-	Global.player = player
-	
 	land_cushion_body.transform = first_chunk_transform
 	
 	for i in range(-CUSHION_RADIUS, CUSHION_RADIUS + 1):

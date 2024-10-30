@@ -22,7 +22,11 @@ var player: Player
 
 
 func _ready():
-	reset()
+	terrain_seed = Time.get_unix_time_from_system()
+	
+	RIDGE_NOISE.seed = terrain_seed
+	RIDGE_HEIGHT_NOISE.seed = terrain_seed
+	STRUCTURE_NOISE.seed = terrain_seed
 	
 	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
 	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY
@@ -32,17 +36,20 @@ func _physics_process(delta):
 	current_wind_boost = 0
 
 
-func reset():
-	terrain_seed = Time.get_unix_time_from_system()
-	
-	RIDGE_NOISE.seed = terrain_seed
-	RIDGE_HEIGHT_NOISE.seed = terrain_seed
-	STRUCTURE_NOISE.seed = terrain_seed
-
-
 func reload():
-	reset()
-	get_tree().reload_current_scene()
+	init_player()
+
+
+func init_player():
+	if not player: return
+	
+	var board_position = player.board_base.position
+	
+	player.board_base.position.y = (
+		get_terrain_height_from_x_z(board_position.x, board_position.z) + 15)
+	player.board_base.linear_velocity = Vector3.ZERO
+	player.board_base.linear_velocity.z = -60
+	player.board_base.rotation = Vector3.ZERO
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:
