@@ -11,7 +11,7 @@ size = Vector3(0.6, 0.1, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gggbb"]
 margin = 10.0
-size = Vector3(0.6, 0.1, 2)
+size = Vector3(0.6, 1, 2)
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_j606p")
@@ -43,6 +43,7 @@ one_shot = true
 mesh = SubResource("BoxMesh_ewnj3")
 
 [node name="BoardCollisionShape3D" type="CollisionShape3D" parent="BoardBase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 shape = SubResource("BoxShape3D_gggbb")
 
 [node name="AirTimeTimer" type="Timer" parent="BoardBase"]
