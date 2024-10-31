@@ -4,6 +4,7 @@ extends Node
 @export var RIDGE_NOISE: FastNoiseLite
 @export var RIDGE_HEIGHT_NOISE: FastNoiseLite
 @export var STRUCTURE_NOISE: FastNoiseLite
+@export var ROCK_NOISE: FastNoiseLite
 
 var GENERATOR_RADIUS := 800
 var STRUCTURE_SIZE := 150
@@ -15,6 +16,7 @@ var RIDGE_NOISE_FREQUENCY := 0.003
 var RIDGE_HEIGHT_NOISE_FREQUENCY := 0.003
 var WIND_CURRENT_COUNT := 1
 var ANGLE := 0.6
+var ROCK_SPACING := 10
 
 var current_wind_boost := 0.0
 var terrain_seed: int
@@ -27,6 +29,7 @@ func _ready():
 	RIDGE_NOISE.seed = terrain_seed
 	RIDGE_HEIGHT_NOISE.seed = terrain_seed
 	STRUCTURE_NOISE.seed = terrain_seed
+	ROCK_NOISE.seed = terrain_seed
 	
 	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
 	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY

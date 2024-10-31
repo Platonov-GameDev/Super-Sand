@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://5i54q4xuogfi"]
+[gd_scene load_steps=6 format=3 uid="uid://5i54q4xuogfi"]
 
 [ext_resource type="Script" path="res://autoload/Global.gd" id="1_3ocrx"]
 
@@ -17,8 +17,11 @@ fractal_type = 0
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0tq7o"]
 frequency = 1.0
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_w0ivf"]
+
 [node name="Global" type="Node"]
 script = ExtResource("1_3ocrx")
 RIDGE_NOISE = SubResource("FastNoiseLite_exw8t")
 RIDGE_HEIGHT_NOISE = SubResource("FastNoiseLite_g5foq")
 STRUCTURE_NOISE = SubResource("FastNoiseLite_0tq7o")
+ROCK_NOISE = SubResource("FastNoiseLite_w0ivf")

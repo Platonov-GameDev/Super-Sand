@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ct6nrndmcmls"]
+[gd_scene load_steps=7 format=3 uid="uid://ct6nrndmcmls"]
 
 [ext_resource type="Script" path="res://scenes/Player/Player.gd" id="1_j606p"]
 [ext_resource type="Script" path="res://scenes/Player/BoardBase.gd" id="2_jddbh"]
@@ -13,11 +13,15 @@ size = Vector3(0.6, 0.1, 2)
 margin = 10.0
 size = Vector3(0.6, 1, 2)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_fcqh2"]
+size = Vector3(0.6, 0.1, 2)
+
 [node name="Player" type="Node3D"]
 script = ExtResource("1_j606p")
 
 [node name="BoardBase" type="RigidBody3D" parent="."]
 collision_layer = 2
+mass = 0.5
 center_of_mass_mode = 1
 inertia = Vector3(1, 1, 1)
 continuous_cd = true
@@ -48,3 +52,15 @@ shape = SubResource("BoxShape3D_gggbb")
 [node name="AirTimeTimer" type="Timer" parent="BoardBase"]
 wait_time = 0.1
 one_shot = true
+
+[node name="RockReactor" type="RigidBody3D" parent="."]
+collision_layer = 8
+collision_mask = 4
+mass = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RockReactor"]
+shape = SubResource("BoxShape3D_fcqh2")
+
+[node name="JoltGeneric6DOFJoint3D" type="JoltGeneric6DOFJoint3D" parent="RockReactor"]
+node_a = NodePath("..")
+node_b = NodePath("../../BoardBase")

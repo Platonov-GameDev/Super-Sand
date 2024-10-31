@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4ulp31ubm80j"]
+
+[ext_resource type="Script" path="res://scenes/RockStructure/RockStructure.gd" id="1_tcf1n"]
+[ext_resource type="PackedScene" uid="uid://l8huk2xnw7r8" path="res://scenes/Obstacle_Rock/Obstacle_Rock.tscn" id="2_lcwxg"]
+
+[node name="RockStructure" type="Node3D"]
+script = ExtResource("1_tcf1n")
+rock_scene = ExtResource("2_lcwxg")

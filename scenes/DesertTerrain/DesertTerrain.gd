@@ -2,6 +2,7 @@ extends Node3D
 
 
 @export var wind_current_scene: PackedScene
+@export var rock_structure_scene: PackedScene
 @export var sand_material: StandardMaterial3D
 
 @onready var mesh_update_area: Area3D = $MeshUpdateArea
@@ -137,6 +138,11 @@ func _swap_terrain_structures(origin: Vector3):
 				wind_current.position = structure_position
 				wind_current.generate_curve()
 				new_terrain_structures.add_child(wind_current)
+			
+			var rock_structure = rock_structure_scene.instantiate()
+			rock_structure.position = structure_position
+			rock_structure.generate_rocks()
+			new_terrain_structures.add_child(rock_structure)
 	
 	if current_terrain_structures: current_terrain_structures.queue_free()
 	terrain_body.add_child.call_deferred(new_terrain_structures)

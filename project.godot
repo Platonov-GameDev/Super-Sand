@@ -67,6 +67,8 @@ Reload={
 
 3d_physics/layer_1="terrain"
 3d_physics/layer_2="player"
+3d_physics/layer_3="rock"
+3d_physics/layer_4="rock_reactor"
 
 [physics]
 
