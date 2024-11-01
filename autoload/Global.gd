@@ -40,19 +40,7 @@ func _physics_process(delta):
 
 
 func reload():
-	init_player()
-
-
-func init_player():
-	if not player: return
-	
-	var board_position = player.board_base.position
-	
-	player.board_base.position.y = (
-		get_terrain_height_from_x_z(board_position.x, board_position.z) + 15)
-	player.board_base.linear_velocity = Vector3.ZERO
-	player.board_base.linear_velocity.z = -60
-	player.board_base.rotation = Vector3.ZERO
+	player.reposition()
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:

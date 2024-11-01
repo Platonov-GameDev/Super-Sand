@@ -1,10 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://ct6nrndmcmls"]
+[gd_scene load_steps=10 format=3 uid="uid://ct6nrndmcmls"]
 
 [ext_resource type="Script" path="res://scenes/Player/Player.gd" id="1_j606p"]
 [ext_resource type="Script" path="res://scenes/Player/BoardBase.gd" id="2_jddbh"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_yjufc"]
-size = Vector3(0.6, 1.4, 0.6)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ewnj3"]
 size = Vector3(0.6, 0.1, 2)
@@ -15,6 +12,19 @@ size = Vector3(0.6, 1, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fcqh2"]
 size = Vector3(0.6, 0.1, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yjufc"]
+size = Vector3(0.5, 1, 0.3)
+
+[sub_resource type="SphereMesh" id="SphereMesh_aclen"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_ju786"]
+size = Vector3(0.2, 0.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i6kkb"]
+size = Vector3(0.2, 0.1, 0.1)
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_j606p")
@@ -34,10 +44,6 @@ script = ExtResource("2_jddbh")
 transform = Transform3D(1, 1.05514e-08, -1.15725e-08, -7.19671e-09, 0.965926, 0.258819, 1.39091e-08, -0.258819, 0.965926, 0, 3, 3)
 fov = 90.0
 
-[node name="BodyMeshInstance3D" type="MeshInstance3D" parent="BoardBase"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("BoxMesh_yjufc")
-
 [node name="PushCooldownTimer" type="Timer" parent="BoardBase"]
 wait_time = 0.7
 one_shot = true
@@ -53,6 +59,15 @@ shape = SubResource("BoxShape3D_gggbb")
 wait_time = 0.1
 one_shot = true
 
+[node name="TorsoJoint" type="JoltGeneric6DOFJoint3D" parent="BoardBase"]
+linear_limit_spring_y/enabled = true
+linear_limit_spring_y/frequency = 14.0
+linear_limit_spring_y/damping = 0.5
+node_a = NodePath("..")
+node_b = NodePath("../../Torso")
+solver_velocity_iterations = 8
+solver_position_iterations = 8
+
 [node name="RockReactor" type="RigidBody3D" parent="."]
 collision_layer = 8
 collision_mask = 4
@@ -64,3 +79,80 @@ shape = SubResource("BoxShape3D_fcqh2")
 [node name="JoltGeneric6DOFJoint3D" type="JoltGeneric6DOFJoint3D" parent="RockReactor"]
 node_a = NodePath("..")
 node_b = NodePath("../../BoardBase")
+
+[node name="Torso" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1, 0)
+mass = 0.001
+
+[node name="BodyMeshInstance3D" type="MeshInstance3D" parent="Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16474, 0)
+mesh = SubResource("BoxMesh_yjufc")
+skeleton = NodePath("../../BoardBase")
+
+[node name="HeadJoint" type="JoltGeneric6DOFJoint3D" parent="Torso"]
+linear_limit_spring_y/enabled = true
+linear_limit_spring_y/frequency = 14.0
+linear_limit_spring_y/damping = 0.5
+node_a = NodePath("..")
+node_b = NodePath("../../Head")
+solver_velocity_iterations = 8
+solver_position_iterations = 8
+
+[node name="LeftHandJoint" type="JoltGeneric6DOFJoint3D" parent="Torso"]
+linear_limit_spring_x/enabled = true
+linear_limit_spring_x/frequency = 30.0
+linear_limit_spring_x/damping = 100.0
+linear_limit_spring_y/enabled = true
+linear_limit_spring_y/frequency = 30.0
+linear_limit_spring_y/damping = 100.0
+linear_limit_spring_z/enabled = true
+linear_limit_spring_z/frequency = 30.0
+linear_limit_spring_z/damping = 100.0
+node_a = NodePath("..")
+node_b = NodePath("../../LeftHand")
+solver_velocity_iterations = 25
+solver_position_iterations = 25
+
+[node name="RightHandJoint" type="JoltGeneric6DOFJoint3D" parent="Torso"]
+linear_limit_spring_x/enabled = true
+linear_limit_spring_x/frequency = 30.0
+linear_limit_spring_x/damping = 100.0
+linear_limit_spring_y/enabled = true
+linear_limit_spring_y/frequency = 30.0
+linear_limit_spring_y/damping = 100.0
+linear_limit_spring_z/enabled = true
+linear_limit_spring_z/frequency = 30.0
+linear_limit_spring_z/damping = 100.0
+node_a = NodePath("..")
+node_b = NodePath("../../RightHand")
+solver_velocity_iterations = 25
+solver_position_iterations = 25
+
+[node name="Head" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.94176, -0.421154)
+mass = 0.001
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("SphereMesh_aclen")
+
+[node name="LeftHand" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.36533, 0)
+mass = 0.001
+gravity_scale = 0.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftHand"]
+mesh = SubResource("BoxMesh_ju786")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftHand"]
+shape = SubResource("BoxShape3D_i6kkb")
+
+[node name="RightHand" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.36533, 0)
+mass = 0.001
+gravity_scale = 0.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightHand"]
+mesh = SubResource("BoxMesh_ju786")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightHand"]
+shape = SubResource("BoxShape3D_i6kkb")

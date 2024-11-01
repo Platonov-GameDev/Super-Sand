@@ -16,7 +16,7 @@ func _ready():
 	air_time_timer.timeout.connect(_on_air_time_timer_timeout)
 
 
-func _integrate_forces(state):
+func _integrate_forces(state):	
 	is_on_ground = true if get_contact_count() >= 2 else false
 	
 	if get_contact_count() >= 1 and is_in_air_for_long:
