@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxtgiqwlcw52k"]
+[gd_scene load_steps=7 format=3 uid="uid://cxtgiqwlcw52k"]
 
 [ext_resource type="Script" path="res://scenes/Main/Main.gd" id="1_aa2qk"]
 [ext_resource type="PackedScene" uid="uid://ct6nrndmcmls" path="res://scenes/Player/Player.tscn" id="2_e3xip"]
@@ -19,11 +19,6 @@ background_mode = 2
 sky = SubResource("Sky_2bola")
 ambient_light_source = 3
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sj33r"]
-friction = 0.4
-bounce = 1.0
-absorbent = true
-
 [node name="Main" type="Node3D"]
 script = ExtResource("1_aa2qk")
 
@@ -36,9 +31,5 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_qsacj")
-
-[node name="LandCushionBody" type="StaticBody3D" parent="."]
-collision_mask = 0
-physics_material_override = SubResource("PhysicsMaterial_sj33r")
 
 [node name="DesertTerrain" parent="." instance=ExtResource("4_l7y0p")]
