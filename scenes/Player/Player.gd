@@ -14,6 +14,7 @@ var LEAN_CONTROL := 20
 var TORSO_LEAN_AMOUNT := .5
 var SITDOWN_AMOUNT := .1
 var HAND_BALANCING_AMOUNT := 1.0
+var AIR_HAND_DRAG := 1
 
 var torso_offset: Vector3
 var left_hand_offset: Vector3
@@ -87,6 +88,50 @@ func _physics_process(_delta):
 	
 	torso_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, sitdown_amount)
 	torso_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, sitdown_amount)
+	
+	if not board_base.is_on_ground:
+		var hand_drag_force = (
+			(-(board_base.linear_velocity + torso.global_position) * torso.transform).normalized() * AIR_HAND_DRAG)
+		
+		left_hand_joint.set_param_x(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.x)
+		left_hand_joint.set_param_x(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.x)
+		left_hand_joint.set_param_y(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.y)
+		left_hand_joint.set_param_y(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.y)
+		left_hand_joint.set_param_z(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.z)
+		left_hand_joint.set_param_z(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.z)
+		
+		right_hand_joint.set_param_x(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.x)
+		right_hand_joint.set_param_x(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.x)
+		right_hand_joint.set_param_y(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.y)
+		right_hand_joint.set_param_y(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.y)
+		right_hand_joint.set_param_z(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, hand_drag_force.z)
+		right_hand_joint.set_param_z(
+			JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, hand_drag_force.z)
+	else:
+		left_hand_joint.set_param_x(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		left_hand_joint.set_param_x(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
+		left_hand_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		left_hand_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
+		left_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		left_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
+		
+		right_hand_joint.set_param_x(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		right_hand_joint.set_param_x(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
+		right_hand_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		right_hand_joint.set_param_y(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
+		right_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
+		right_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
 	
 	if Input.is_action_just_pressed("Reload"):
 		Global.reload()
