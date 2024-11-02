@@ -47,8 +47,7 @@ func _on_mesh_update_area_body_exited(body):
 func _on_shape_update_area_body_exited(body):
 	shape_update_area.global_position = body.global_position
 	
-	thread_pool_task_ids.append(
-		WorkerThreadPool.add_task(_swap_terrain_shape.bind(body.global_position)))
+	_swap_terrain_shape(body.global_position)
 
 
 func _on_structure_update_area_body_exited(body):
