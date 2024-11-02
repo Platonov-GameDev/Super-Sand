@@ -14,7 +14,6 @@ extends Node3D
 @onready var terrain_body: StaticBody3D = $TerrainBody
 
 var ACTIVE_COLLISION_RADIUS := 6
-var ACTIVE_STRUCTURE_RADIUS := 800
 
 var current_terrain_mesh: MeshInstance3D
 var current_terrain_shape: CollisionShape3D
@@ -29,12 +28,15 @@ func _ready():
 	
 	mesh_update_shape.shape.radius = Global.GENERATOR_RADIUS / 2
 	shape_update_shape.shape.radius = ACTIVE_COLLISION_RADIUS / 2
-	structure_update_shape.shape.radius = ACTIVE_STRUCTURE_RADIUS / 2
+	structure_update_shape.shape.radius = Global.ACTIVE_STRUCTURE_RADIUS / 2
 	
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO)))
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
+	
+	sand_material.distance_fade_min_distance = Global.GENERATOR_RADIUS / 4
+	sand_material.distance_fade_max_distance = sand_material.distance_fade_min_distance - 50
 
 
 func _on_mesh_update_area_body_exited(body):
@@ -116,10 +118,14 @@ func _swap_terrain_structures(origin: Vector3):
 		Vector2(Global.STRUCTURE_SIZE, Global.STRUCTURE_SIZE)
 	)
 	for x_offset in range(
-		-ACTIVE_STRUCTURE_RADIUS, ACTIVE_STRUCTURE_RADIUS, Global.STRUCTURE_SIZE
+		-Global.ACTIVE_STRUCTURE_RADIUS,
+		Global.ACTIVE_STRUCTURE_RADIUS,
+		Global.STRUCTURE_SIZE
 	):
 		for z_offset in range(
-			-ACTIVE_STRUCTURE_RADIUS, ACTIVE_STRUCTURE_RADIUS, Global.STRUCTURE_SIZE
+			-Global.ACTIVE_STRUCTURE_RADIUS,
+			Global.ACTIVE_STRUCTURE_RADIUS,
+			Global.STRUCTURE_SIZE
 		):
 			var structure_x_z = structures_origin
 			structure_x_z.x += x_offset

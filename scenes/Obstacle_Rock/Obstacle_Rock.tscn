@@ -1,5 +1,7 @@
 [gd_scene load_steps=7 format=4 uid="uid://l8huk2xnw7r8"]
 
+[ext_resource type="Script" path="res://scenes/Obstacle_Rock/obstacle_rock.gd" id="1_43fma"]
+
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ckokp"]
 friction = 0.0
 bounce = 0.5
@@ -41,12 +43,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_7ml3h")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fxlep"]
-albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
-distance_fade_mode = 2
-distance_fade_min_distance = 200.0
-distance_fade_max_distance = 150.0
-
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gcear"]
 points = PackedVector3Array(-0.438893, 0.232369, 0.150515, -0.436763, -0.0394539, 0.000653237, -0.340139, -0.0398366, 0.188359, -0.0626422, 0.704352, 0.341316, -0.289327, 0.800414, 0.149964, -0.423978, 0.509359, 0.0853546, -0.358578, -0.040028, -0.200332, -0.433403, -0.0394539, -0.0420071, -0.00248784, -0.0415589, 0.312899, -0.0616587, -0.0411761, 0.314619, 0.000544459, 0.691436, 0.369527, -0.177706, 0.842034, 0.203496, -0.0684609, 0.933503, 0.165927, 0.123148, 0.893988, -0.219529, -0.0782134, 0.73009, -0.317785, -0.408243, 0.358952, -0.181892, -0.417667, 0.153626, -0.154231, -0.305144, 0.399042, -0.291019, -0.308832, -0.040315, -0.242648, 0.148062, -0.0428027, -0.275744, -0.0413341, 0.0094379, 0.325628, 0.389745, -0.0437595, 0.113221, 0.14839, -0.0423243, 0.278633, 0.144948, 0.780608, 0.343793, 0.161011, 0.856769, 0.290743, 0.338441, 0.817827, -0.0179247, 0.261568, 0.849019, -0.170676, 0.300333, 0.508498, -0.229368, 0.0292284, 0.750661, -0.291019, 0.0256224, 0.565427, -0.333405, 0.212642, 0.0256076, -0.287992, 0.39835, -0.0439508, -0.101525, 0.384008, 0.0346971, -0.176938, 0.393023, 0.044552, 0.126708, 0.254192, 0.340965, 0.284619, 0.384254, 0.569637, -0.0226723, 0.39499, 0.162907, -0.169369, 0.159535, 0.363545, -0.321088)
 
@@ -55,11 +51,11 @@ transform = Transform3D(60, 0, 0, 0, 60, 0, 0, 0, 60, 0, 0, 0)
 collision_layer = 4
 collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_ckokp")
+script = ExtResource("1_43fma")
 
 [node name="Stone_5" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_h0ghc")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("StandardMaterial3D_fxlep")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_gcear")

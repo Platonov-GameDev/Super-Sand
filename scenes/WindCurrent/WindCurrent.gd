@@ -10,6 +10,11 @@ var rng: RandomNumberGenerator
 var curve_mesh: CurveMesh3D
 
 
+func _ready():
+	mesh_material.distance_fade_min_distance = Global.ACTIVE_STRUCTURE_RADIUS / 4
+	mesh_material.distance_fade_max_distance = mesh_material.distance_fade_min_distance - 50
+
+
 func generate_curve():
 	rng = RandomNumberGenerator.new()
 	rng.seed = hash("%f %f %d" % [position.x, position.z, Global.terrain_seed])

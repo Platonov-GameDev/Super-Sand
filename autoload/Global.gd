@@ -6,8 +6,10 @@ extends Node
 @export var STRUCTURE_NOISE: FastNoiseLite
 @export var ROCK_NOISE: FastNoiseLite
 @export var player_scene: PackedScene
+@export var rock_material: StandardMaterial3D
 
 var GENERATOR_RADIUS := 800
+var ACTIVE_STRUCTURE_RADIUS := 800
 var STRUCTURE_SIZE := 150
 var RESOLUTION := .5
 var HEIGHT_SCALE := 50.0
@@ -35,6 +37,9 @@ func _ready():
 	
 	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
 	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY
+	
+	rock_material.distance_fade_min_distance = ACTIVE_STRUCTURE_RADIUS / 4
+	rock_material.distance_fade_max_distance = rock_material.distance_fade_min_distance - 50
 
 
 func _physics_process(delta):
