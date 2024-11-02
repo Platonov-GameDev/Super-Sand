@@ -64,27 +64,17 @@ one_shot = true
 
 [node name="TorsoJoint" type="JoltGeneric6DOFJoint3D" parent="BoardBase"]
 linear_limit_spring_x/enabled = true
-linear_limit_spring_x/frequency = 60.0
-linear_limit_spring_x/damping = 1.0
+linear_limit_spring_x/frequency = 20.0
+linear_limit_spring_x/damping = 10.0
 linear_limit_spring_y/enabled = true
-linear_limit_spring_y/frequency = 60.0
+linear_limit_spring_y/frequency = 10.0
 linear_limit_spring_y/damping = 1.0
-linear_limit_spring_z/enabled = true
-linear_limit_spring_z/frequency = 60.0
-linear_limit_spring_z/damping = 1.0
-angular_spring_x/enabled = true
-angular_spring_x/frequency = 60.0
-angular_spring_x/damping = 1.0
-angular_spring_y/enabled = true
-angular_spring_y/frequency = 60.0
-angular_spring_y/damping = 1.0
-angular_spring_z/enabled = true
-angular_spring_z/frequency = 60.0
-angular_spring_z/damping = 1.0
+linear_limit_spring_z/frequency = 20.0
+linear_limit_spring_z/damping = 2.0
 node_a = NodePath("..")
 node_b = NodePath("../../Torso")
-solver_velocity_iterations = 8
-solver_position_iterations = 8
+solver_velocity_iterations = 2
+solver_position_iterations = 2
 
 [node name="RockReactor" type="RigidBody3D" parent="."]
 collision_layer = 8
@@ -100,6 +90,8 @@ node_b = NodePath("../../BoardBase")
 
 [node name="Torso" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0.224144, -0.836516, 2.08616e-07, 0.965925, 0.258819, 0.866025, -0.12941, 0.482963, 0, 1.37424, 0)
+collision_layer = 0
+collision_mask = 0
 mass = 0.001
 
 [node name="BodyMeshInstance3D" type="MeshInstance3D" parent="Torso"]
@@ -109,33 +101,33 @@ skeleton = NodePath("../../BoardBase")
 [node name="LeftHandJoint" type="JoltGeneric6DOFJoint3D" parent="Torso"]
 linear_limit_spring_x/enabled = true
 linear_limit_spring_x/frequency = 60.0
-linear_limit_spring_x/damping = 50.0
+linear_limit_spring_x/damping = 10.0
 linear_limit_spring_y/enabled = true
 linear_limit_spring_y/frequency = 60.0
-linear_limit_spring_y/damping = 50.0
+linear_limit_spring_y/damping = 10.0
 linear_limit_spring_z/enabled = true
 linear_limit_spring_z/frequency = 60.0
-linear_limit_spring_z/damping = 50.0
+linear_limit_spring_z/damping = 10.0
 node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
-solver_velocity_iterations = 80
-solver_position_iterations = 80
+solver_velocity_iterations = 60
+solver_position_iterations = 60
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.5, 0)
 
 [node name="RightHandJoint" type="JoltGeneric6DOFJoint3D" parent="Torso"]
 linear_limit_spring_x/enabled = true
 linear_limit_spring_x/frequency = 60.0
-linear_limit_spring_x/damping = 50.0
+linear_limit_spring_x/damping = 10.0
 linear_limit_spring_y/enabled = true
 linear_limit_spring_y/frequency = 60.0
-linear_limit_spring_y/damping = 50.0
+linear_limit_spring_y/damping = 10.0
 linear_limit_spring_z/enabled = true
 linear_limit_spring_z/frequency = 60.0
-linear_limit_spring_z/damping = 50.0
+linear_limit_spring_z/damping = 10.0
 node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
-solver_velocity_iterations = 80
-solver_position_iterations = 80
+solver_velocity_iterations = 60
+solver_position_iterations = 60
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.5, 0)
 
 [node name="HeadMesh" type="MeshInstance3D" parent="Torso"]
@@ -148,6 +140,8 @@ shape = SubResource("BoxShape3D_syx8g")
 
 [node name="LeftHand" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -0.542859, 1.5917, -1.22924)
+collision_layer = 0
+collision_mask = 0
 mass = 0.001
 gravity_scale = 0.0
 
@@ -159,6 +153,8 @@ shape = SubResource("BoxShape3D_i6kkb")
 
 [node name="RightHand" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0.584415, 1.5917, 1.02158)
+collision_layer = 0
+collision_mask = 0
 mass = 0.001
 gravity_scale = 0.0
 
