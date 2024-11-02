@@ -90,7 +90,7 @@ node_b = NodePath("../../BoardBase")
 
 [node name="Torso" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0.224144, -0.836516, 2.08616e-07, 0.965925, 0.258819, 0.866025, -0.12941, 0.482963, 0, 1.37424, 0)
-collision_layer = 0
+collision_layer = 2
 collision_mask = 0
 mass = 0.001
 
@@ -140,7 +140,7 @@ shape = SubResource("BoxShape3D_syx8g")
 
 [node name="LeftHand" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -0.542859, 1.5917, -1.22924)
-collision_layer = 0
+collision_layer = 2
 collision_mask = 0
 mass = 0.001
 gravity_scale = 0.0
@@ -153,7 +153,7 @@ shape = SubResource("BoxShape3D_i6kkb")
 
 [node name="RightHand" type="RigidBody3D" parent="."]
 transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0.584415, 1.5917, 1.02158)
-collision_layer = 0
+collision_layer = 2
 collision_mask = 0
 mass = 0.001
 gravity_scale = 0.0
