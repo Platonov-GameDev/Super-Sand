@@ -5,6 +5,7 @@ extends Node
 @export var RIDGE_HEIGHT_NOISE: FastNoiseLite
 @export var STRUCTURE_NOISE: FastNoiseLite
 @export var ROCK_NOISE: FastNoiseLite
+@export var player_scene: PackedScene
 
 var GENERATOR_RADIUS := 800
 var STRUCTURE_SIZE := 150
@@ -21,6 +22,7 @@ var ROCK_SPACING := 10
 var current_wind_boost := 0.0
 var terrain_seed: int
 var player: Player
+var main: Node3D
 
 
 func _ready():
@@ -40,7 +42,18 @@ func _physics_process(delta):
 
 
 func reload():
-	player.reposition()
+	var player_position = Vector3.ZERO
+	if player:
+		player.queue_free()
+		player_position = player.board_base.global_position
+	player_position.y = (
+		get_terrain_height_from_x_z(player_position.x, player_position.z)
+		+ HEIGHT_SCALE + 20
+	)
+	
+	player = player_scene.instantiate()
+	player.position = player_position
+	main.add_child(player)
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:

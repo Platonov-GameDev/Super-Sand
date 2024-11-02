@@ -59,7 +59,7 @@ func _get_random_wind_point(start_point = null):
 
 
 func _physics_process(_delta):
-	var local_player_position = Global.player.board_base.position * curve_mesh.global_transform
+	var local_player_position = Global.player.board_base.global_position * curve_mesh.global_transform
 	var closest_point_to_player = (curve_mesh.curve.get_closest_point(local_player_position))
 	var distance_to_player = (local_player_position - closest_point_to_player).length()
 	

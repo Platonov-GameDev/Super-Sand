@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://5i54q4xuogfi"]
+[gd_scene load_steps=7 format=3 uid="uid://5i54q4xuogfi"]
 
 [ext_resource type="Script" path="res://autoload/Global.gd" id="1_3ocrx"]
+[ext_resource type="PackedScene" uid="uid://ct6nrndmcmls" path="res://scenes/Player/Player.tscn" id="2_3opj0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_exw8t"]
 noise_type = 2
@@ -25,3 +26,4 @@ RIDGE_NOISE = SubResource("FastNoiseLite_exw8t")
 RIDGE_HEIGHT_NOISE = SubResource("FastNoiseLite_g5foq")
 STRUCTURE_NOISE = SubResource("FastNoiseLite_0tq7o")
 ROCK_NOISE = SubResource("FastNoiseLite_w0ivf")
+player_scene = ExtResource("2_3opj0")
