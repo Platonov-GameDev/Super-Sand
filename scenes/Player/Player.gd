@@ -12,7 +12,7 @@ class_name Player
 
 var LEAN_CONTROL := 20
 var TORSO_LEAN_AMOUNT := .5
-var SITDOWN_AMOUNT := .25
+var SITDOWN_AMOUNT := .1
 var HAND_BALANCING_AMOUNT := 1.0
 
 var torso_offset: Vector3
@@ -33,23 +33,26 @@ func _physics_process(_delta):
 	board_base.apply_torque(board_base.global_basis.x * air_control_input.y * LEAN_CONTROL)
 	board_base.apply_torque(board_base.global_basis.z * air_control_input.x * LEAN_CONTROL)
 	
+	var gyro_rotation = board_base.global_rotation
+	if not board_base.is_on_ground:
+		gyro_rotation = Vector3.ZERO
+	
 	var steer_lean_amount = TORSO_LEAN_AMOUNT * -air_control_input.x
 	torso_joint.set_param_x(
-		JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, steer_lean_amount * 2)
+		JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, steer_lean_amount * 2 + gyro_rotation.x)
 	torso_joint.set_param_x(
-		JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, steer_lean_amount * 2)
+		JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, steer_lean_amount * 2 + gyro_rotation.x)
 	
 	torso_joint.set_param_z(
-		JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_LOWER, -steer_lean_amount)
+		JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_LOWER, -steer_lean_amount + gyro_rotation.z)
 	torso_joint.set_param_z(
-		JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_UPPER, -steer_lean_amount)
+		JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_UPPER, -steer_lean_amount + gyro_rotation.z)
 	
 	var hand_balancing_angle = HAND_BALANCING_AMOUNT * -air_control_input.x
 	if (
 		left_hand_joint.get_param_y(JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_LOWER)
 		!= hand_balancing_angle
 	):
-		
 		left_hand_joint.set_param_y(
 			JoltGeneric6DOFJoint3D.PARAM_ANGULAR_LIMIT_LOWER, hand_balancing_angle)
 		left_hand_joint.set_param_y(
