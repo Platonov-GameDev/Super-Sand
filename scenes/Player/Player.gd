@@ -34,7 +34,7 @@ func _physics_process(_delta):
 	board_base.apply_torque(board_base.global_basis.x * air_control_input.y * LEAN_CONTROL)
 	board_base.apply_torque(board_base.global_basis.z * air_control_input.x * LEAN_CONTROL)
 	
-	var gyro_rotation = board_base.global_rotation
+	var gyro_rotation = board_base.global_rotation.clampf(-0.5, 0.5)
 	if not board_base.is_on_ground:
 		gyro_rotation = Vector3.ZERO
 	
