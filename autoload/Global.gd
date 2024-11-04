@@ -25,6 +25,7 @@ var current_wind_boost := 0.0
 var terrain_seed: int
 var player: Player
 var main: Node3D
+var is_player_resetting := false
 
 
 func _ready():
@@ -47,6 +48,7 @@ func _physics_process(delta):
 
 
 func reload():
+	is_player_resetting = true
 	var player_position = Vector3.ZERO
 	if player:
 		player.queue_free()

@@ -30,6 +30,8 @@ func _ready():
 
 
 func _physics_process(_delta):
+	Global.is_player_resetting = false
+	
 	var air_control_input = Input.get_vector("Move right", "Move left", "Move forward", "Move back")
 	board_base.apply_torque(board_base.global_basis.x * air_control_input.y * LEAN_CONTROL)
 	board_base.apply_torque(board_base.global_basis.z * air_control_input.x * LEAN_CONTROL)

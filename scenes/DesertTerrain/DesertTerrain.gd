@@ -1,4 +1,5 @@
 extends Node3D
+class_name DesertTerrain
 
 
 @export var wind_current_scene: PackedScene
@@ -19,6 +20,11 @@ var current_terrain_mesh: MeshInstance3D
 var current_terrain_shape: CollisionShape3D
 var current_terrain_structures: Node3D
 var thread_pool_task_ids: Array[int] = []
+var is_swapping = {
+	"mesh": false,
+	"shape": false,
+	"structures": false,
+}
 
 
 func _ready():
@@ -40,20 +46,35 @@ func _ready():
 
 
 func _on_mesh_update_area_body_exited(body):
+	if Global.is_player_resetting: return
+	
 	mesh_update_area.global_position = body.global_position
+	
+	if is_swapping.mesh: return
+	is_swapping.mesh = true
 	
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(body.global_position)))
 
 
 func _on_shape_update_area_body_exited(body):
+	if Global.is_player_resetting: return
+	
 	shape_update_area.global_position = body.global_position
+	
+	if is_swapping.shape: return
+	is_swapping.shape = true
 	
 	_swap_terrain_shape(body.global_position)
 
 
 func _on_structure_update_area_body_exited(body):
+	if Global.is_player_resetting: return
+	
 	structure_update_area.global_position = body.global_position
+	
+	if is_swapping.structures: return
+	is_swapping.structures = true
 	
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(body.global_position)))
@@ -87,6 +108,8 @@ func _swap_terrain_mesh(origin: Vector3):
 	terrain_body.add_child.call_deferred(new_terrain_mesh)
 	if current_terrain_mesh: current_terrain_mesh.queue_free()
 	current_terrain_mesh = new_terrain_mesh
+	
+	is_swapping.mesh = false
 
 
 func _swap_terrain_shape(origin: Vector3):
@@ -108,6 +131,8 @@ func _swap_terrain_shape(origin: Vector3):
 	terrain_body.add_child.call_deferred(new_terrain_shape)
 	if current_terrain_shape: current_terrain_shape.queue_free()
 	current_terrain_shape = new_terrain_shape
+	
+	is_swapping.shape = false
 
 
 func _swap_terrain_structures(origin: Vector3):
@@ -152,6 +177,8 @@ func _swap_terrain_structures(origin: Vector3):
 	if current_terrain_structures: current_terrain_structures.queue_free()
 	terrain_body.add_child.call_deferred(new_terrain_structures)
 	current_terrain_structures = new_terrain_structures
+	
+	is_swapping.structures = false
 
 
 func _add_terrain_to_arrays(
