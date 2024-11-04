@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bwwuqs51l3ucn"]
+[gd_scene load_steps=11 format=3 uid="uid://bwwuqs51l3ucn"]
 
 [ext_resource type="Script" path="res://scenes/DesertTerrain/DesertTerrain.gd" id="1_p45mr"]
 [ext_resource type="PackedScene" uid="uid://dkgci7mnmnh8" path="res://scenes/WindCurrent/WindCurrent.tscn" id="2_ctrp8"]
@@ -10,8 +10,14 @@ albedo_texture = ExtResource("3_sr743")
 uv1_triplanar = true
 uv1_world_triplanar = true
 distance_fade_mode = 2
-distance_fade_min_distance = 200.0
-distance_fade_max_distance = 150.0
+distance_fade_max_distance = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gtqv"]
+albedo_texture = ExtResource("3_sr743")
+uv1_triplanar = true
+uv1_world_triplanar = true
+distance_fade_mode = 2
+distance_fade_max_distance = 0.0
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pyvpe"]
 friction = 0.4
@@ -32,7 +38,8 @@ height = 1000.0
 script = ExtResource("1_p45mr")
 wind_current_scene = ExtResource("2_ctrp8")
 rock_structure_scene = ExtResource("3_a137i")
-sand_material = SubResource("StandardMaterial3D_cu3so")
+sand_near_material = SubResource("StandardMaterial3D_cu3so")
+sand_far_material = SubResource("StandardMaterial3D_2gtqv")
 
 [node name="TerrainBody" type="StaticBody3D" parent="."]
 collision_mask = 0
