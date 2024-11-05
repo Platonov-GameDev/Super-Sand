@@ -11,7 +11,7 @@ var curve_mesh: CurveMesh3D
 
 
 func _ready():
-	mesh_material.distance_fade_min_distance = Global.ACTIVE_STRUCTURE_RADIUS / 4
+	mesh_material.distance_fade_min_distance = Global.ACTIVE_STRUCTURE_RADIUS / 4.0
 	mesh_material.distance_fade_max_distance = mesh_material.distance_fade_min_distance - 50
 
 

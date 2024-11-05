@@ -31,7 +31,7 @@ var is_player_resetting := false
 
 
 func _ready():
-	terrain_seed = Time.get_unix_time_from_system()
+	terrain_seed = int(Time.get_unix_time_from_system())
 	
 	RIDGE_NOISE.seed = terrain_seed
 	RIDGE_HEIGHT_NOISE.seed = terrain_seed
@@ -41,11 +41,11 @@ func _ready():
 	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
 	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY
 	
-	rock_material.distance_fade_min_distance = ACTIVE_STRUCTURE_RADIUS / 4
+	rock_material.distance_fade_min_distance = ACTIVE_STRUCTURE_RADIUS / 4.0
 	rock_material.distance_fade_max_distance = rock_material.distance_fade_min_distance - 50
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	current_wind_boost = 0
 
 

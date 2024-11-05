@@ -35,20 +35,20 @@ func _ready():
 	shape_update_area.body_exited.connect(_on_shape_update_area_body_exited)
 	structure_update_area.body_exited.connect(_on_structure_update_area_body_exited)
 	
-	mesh_update_shape.shape.radius = Global.HIGH_POLY_MESH_RADIUS / 2
-	shape_update_shape.shape.radius = ACTIVE_COLLISION_RADIUS / 2
-	structure_update_shape.shape.radius = Global.ACTIVE_STRUCTURE_RADIUS / 2
+	mesh_update_shape.shape.radius = Global.HIGH_POLY_MESH_RADIUS / 2.0
+	shape_update_shape.shape.radius = ACTIVE_COLLISION_RADIUS / 2.0
+	structure_update_shape.shape.radius = Global.ACTIVE_STRUCTURE_RADIUS / 2.0
 	
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO)))
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
 	
-	sand_near_material.distance_fade_min_distance = Global.HIGH_POLY_MESH_RADIUS / 2
+	sand_near_material.distance_fade_min_distance = Global.HIGH_POLY_MESH_RADIUS / 2.0
 	sand_near_material.distance_fade_max_distance = (
 		sand_near_material.distance_fade_min_distance - 50)
 	
-	sand_far_material.distance_fade_max_distance = Global.HIGH_POLY_MESH_RADIUS / 2 - 50
+	sand_far_material.distance_fade_max_distance = Global.HIGH_POLY_MESH_RADIUS / 2.0 - 50
 	sand_far_material.distance_fade_min_distance = (
 		sand_near_material.distance_fade_min_distance - 100)
 
