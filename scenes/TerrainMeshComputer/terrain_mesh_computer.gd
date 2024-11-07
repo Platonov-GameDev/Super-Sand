@@ -35,4 +35,7 @@ func compute_mesh(
 	var output_bytes := rd.buffer_get_data(buffer)
 	var output_array := output_bytes.to_float32_array()
 	
+	rd.free_rid(buffer)
+	rd.free_rid(pipeline)
+	
 	return output_array
