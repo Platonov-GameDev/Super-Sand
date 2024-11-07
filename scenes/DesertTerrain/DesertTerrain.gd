@@ -39,8 +39,13 @@ func _ready():
 	shape_update_shape.shape.radius = ACTIVE_COLLISION_RADIUS / 2.0
 	structure_update_shape.shape.radius = Global.ACTIVE_STRUCTURE_RADIUS / 2.0
 	
+	is_swapping.near_mesh = true
 	thread_pool_task_ids.append(
-		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO)))
+		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO, true)))
+	is_swapping.far_mesh = true
+	thread_pool_task_ids.append(
+		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO, false)))
+	is_swapping.structures = true
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
 	
@@ -96,26 +101,69 @@ func _on_structure_update_area_body_exited(body):
 func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 	var new_terrain_mesh := MeshInstance3D.new()
 	
-	var vertex_array := PackedVector3Array()
-	var normals_array := PackedVector3Array()
+	var range_min
+	var range_max
+	var step
 	if is_near_mesh:
-		_add_terrain_to_arrays(
-			vertex_array,
-			-Global.HIGH_POLY_MESH_RADIUS,
-			Global.HIGH_POLY_MESH_RADIUS,
-			origin,
-			normals_array
-		)
+		range_min = -Global.HIGH_POLY_MESH_RADIUS
+		range_max = Global.HIGH_POLY_MESH_RADIUS
+		step = Global.MESH_STEP
 	else:
-		_add_terrain_to_arrays(
-			vertex_array,
-			-Global.LOW_POLY_MESH_RADIUS,
-			Global.LOW_POLY_MESH_RADIUS,
-			origin,
-			normals_array,
-			Global.FAR_MESH_STEP,
-		)
+		range_min = -Global.LOW_POLY_MESH_RADIUS
+		range_max = Global.LOW_POLY_MESH_RADIUS
+		step = Global.FAR_MESH_STEP
+		
+	# Add input fields
+	var input_array := PackedFloat32Array()
+	var heights_array := _create_terrain_heights_array(
+		range_min,
+		range_max,
+		origin,
+		step
+	)
+	input_array.append(heights_array.size())
+	input_array.append_array(heights_array)
 	
+	input_array.append(range_min)
+	input_array.append(range_max)
+	var snapped_origin = snapped(
+		origin, Vector3(step, step, step))
+	input_array.append(snapped_origin.x)
+	input_array.append(snapped_origin.y)
+	input_array.append(snapped_origin.z)
+	input_array.append(step)
+	
+	# Add output fields
+	var output_arrays_size = heights_array.size() * 3 * 6
+	input_array.resize(input_array.size() + output_arrays_size * 2)
+	
+	# Compute
+	var side_point_count = (range_max - range_min) / step;
+	var output_array := TerrainMeshComputer.compute_mesh(
+		input_array, side_point_count - 1)
+	
+	# Process results
+	var vertex_array := PackedVector3Array()
+	vertex_array.resize(output_arrays_size / 3.0)
+	var vertex_array_offset = 1 + heights_array.size() + 6
+	for i in range(vertex_array_offset, vertex_array_offset + output_arrays_size, 3):
+		var new_point := Vector3()
+		new_point.x = output_array[i]
+		new_point.y = output_array[i + 1]
+		new_point.z = output_array[i + 2]
+		vertex_array.append(new_point)
+	
+	var normals_array := PackedVector3Array()
+	normals_array.resize(output_arrays_size / 3.0)
+	var normals_array_offset = 1 + heights_array.size() + 6 + output_arrays_size
+	for i in range(normals_array_offset, normals_array_offset + output_arrays_size, 3):
+		var new_point := Vector3()
+		new_point.x = output_array[i]
+		new_point.y = output_array[i + 1]
+		new_point.z = output_array[i + 2]
+		normals_array.append(new_point)
+	
+	# Set meshes
 	var arrays = []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = vertex_array
@@ -142,12 +190,37 @@ func _swap_terrain_shape(origin: Vector3):
 	var new_terrain_shape := CollisionShape3D.new()
 	
 	var vertex_array = PackedVector3Array()
-	_add_terrain_to_arrays(
-		vertex_array,
-		-ACTIVE_COLLISION_RADIUS,
-		ACTIVE_COLLISION_RADIUS,
-		origin,
-	)
+	var range_min = -ACTIVE_COLLISION_RADIUS
+	var range_max = ACTIVE_COLLISION_RADIUS
+	var step = Global.MESH_STEP
+	origin = snapped(origin, Vector3(step, step, step))
+	
+	for x_offset in range(range_min, range_max, step):
+		for z_offset in range(range_min, range_max, step):
+			var bot_left = origin
+			bot_left.x += x_offset
+			bot_left.z += z_offset
+			bot_left = Global.get_terrain_point_from_x_z(bot_left.x, bot_left.z)
+			
+			var bot_right = bot_left
+			bot_right.x += step
+			bot_right = Global.get_terrain_point_from_x_z(bot_right.x, bot_right.z)
+			
+			var top_left = bot_left
+			top_left.z -= step
+			top_left = Global.get_terrain_point_from_x_z(top_left.x, top_left.z)
+			
+			var top_right = bot_right
+			top_right.z -= step
+			top_right = Global.get_terrain_point_from_x_z(top_right.x, top_right.z)
+			
+			Global.add_quad_to_vertex_array(
+				vertex_array,
+				bot_left,
+				bot_right,
+				top_left,
+				top_right
+			)
 	
 	var concave_shape = ConcavePolygonShape3D.new()
 	concave_shape.set_faces(vertex_array)
@@ -206,50 +279,25 @@ func _swap_terrain_structures(origin: Vector3):
 	is_swapping.structures = false
 
 
-func _add_terrain_to_arrays(
-	vertex_array: PackedVector3Array,
+func _create_terrain_heights_array(
 	range_min: float,
 	range_max: float,
 	origin: Vector3,
-	normals_array = null,
 	step := Global.MESH_STEP,
-):
+) -> PackedFloat32Array:
 	origin = snapped(origin, Vector3(step, step, step))
-	
+	var heights_array := PackedFloat32Array()
+
 	for x_offset in range(range_min, range_max, step):
 		for z_offset in range(range_min, range_max, step):
-			var bot_left = origin
-			bot_left.x += x_offset
-			bot_left.z += z_offset
-			bot_left = Global.get_terrain_point_from_x_z(bot_left.x, bot_left.z)
-			
-			var bot_right = bot_left
-			bot_right.x += step
-			bot_right = Global.get_terrain_point_from_x_z(bot_right.x, bot_right.z)
-			
-			var top_left = bot_left
-			top_left.z -= step
-			top_left = Global.get_terrain_point_from_x_z(top_left.x, top_left.z)
-			
-			var top_right = bot_right
-			top_right.z -= step
-			top_right = Global.get_terrain_point_from_x_z(top_right.x, top_right.z)
-			
-			Global.add_quad_to_vertex_array(
-				vertex_array,
-				bot_left,
-				bot_right,
-				top_left,
-				top_right
-			)
-			if normals_array != null:
-				Global.add_quad_to_normals_array(
-					normals_array,
-					bot_left,
-					bot_right,
-					top_left,
-					top_right
-				)
+			var height_position = origin
+			height_position.x += x_offset
+			height_position.z += z_offset
+			heights_array.append(
+				Global.get_terrain_height_from_x_z(height_position.x, height_position.z))
+	
+	return heights_array
+	
 
 
 func _exit_tree() -> void:

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://hj58j175wbcj"]
+
+[ext_resource type="Script" path="res://scenes/TerrainMeshComputer/terrain_mesh_computer.gd" id="1_p6ruw"]
+
+[node name="TerrainMeshComputer" type="Node"]
+script = ExtResource("1_p6ruw")
