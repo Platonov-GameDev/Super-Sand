@@ -29,6 +29,7 @@ var is_swapping = {
 	"shape": false,
 	"structures": false,
 }
+var terrain_gen_mutex = Mutex.new()
 
 
 func _ready():
@@ -40,12 +41,8 @@ func _ready():
 	shape_update_shape.shape.radius = ACTIVE_COLLISION_RADIUS / 2.0
 	structure_update_shape.shape.radius = Global.ACTIVE_STRUCTURE_RADIUS / 2.0
 	
-	is_swapping.near_mesh = true
-	thread_pool_task_ids.append(
-		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO, true)))
-	is_swapping.far_mesh = true
-	thread_pool_task_ids.append(
-		WorkerThreadPool.add_task(_swap_terrain_mesh.bind(Vector3.ZERO, false)))
+	_try_swap_near_terrain_mesh(Vector3.ZERO)
+	_try_swap_far_terrain_mesh(Vector3.ZERO)
 	is_swapping.structures = true
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
@@ -66,16 +63,8 @@ func _on_mesh_update_area_body_exited(body):
 	
 	mesh_update_area.global_position = body.global_position
 	
-	if not is_swapping.near_mesh:
-		is_swapping.mesh = true
-		
-		thread_pool_task_ids.append(
-			WorkerThreadPool.add_task(_swap_terrain_mesh.bind(body.global_position, true)))
-	if not is_swapping.far_mesh:
-		is_swapping.far_mesh = true
-		
-		thread_pool_task_ids.append(
-			WorkerThreadPool.add_task(_swap_terrain_mesh.bind(body.global_position, false)))
+	_try_swap_near_terrain_mesh(body.global_position)
+	_try_swap_far_terrain_mesh(body.global_position)
 
 
 func _on_shape_update_area_body_exited(body):
@@ -101,7 +90,32 @@ func _on_structure_update_area_body_exited(body):
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(body.global_position)))
 
 
-func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
+func _try_swap_near_terrain_mesh(spawn_position: Vector3):
+	if not is_swapping.near_mesh:
+		is_swapping.mesh = true
+		
+		thread_pool_task_ids.append(
+			WorkerThreadPool.add_task(_swap_terrain_mesh.bind(
+				spawn_position,
+				true,
+			)))
+
+
+func _try_swap_far_terrain_mesh(spawn_position: Vector3):
+	if not is_swapping.far_mesh:
+		is_swapping.far_mesh = true
+		
+		thread_pool_task_ids.append(
+			WorkerThreadPool.add_task(_swap_terrain_mesh.bind(
+				spawn_position,
+				false,
+			)))
+
+
+func _swap_terrain_mesh(
+	origin: Vector3,
+	is_near_mesh: bool,
+):
 	var new_terrain_mesh := MeshInstance3D.new()
 	
 	var range_min
@@ -176,7 +190,9 @@ func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 	new_terrain_mesh.mesh = array_mesh
 	
 	if is_near_mesh:
+		terrain_gen_mutex.lock()
 		new_terrain_mesh.material_override = sand_near_material
+		terrain_gen_mutex.unlock()
 		if current_terrain_near_mesh: current_terrain_near_mesh.queue_free()
 		current_terrain_near_mesh = new_terrain_mesh
 		is_swapping.near_mesh = false
@@ -208,11 +224,12 @@ func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 				rock_transforms.append_array(
 					rock_structure.generate_rock_mesh_transforms())
 		
+		terrain_gen_mutex.lock()
 		var rock_multimesh = MultiMesh.new()
+		rock_multimesh.mesh = rock_mesh
 		rock_multimesh.transform_format = MultiMesh.TRANSFORM_3D
 		rock_multimesh.instance_count = rock_transforms.size() / 4.0
 		rock_multimesh.transform_array = rock_transforms
-		rock_multimesh.mesh = rock_mesh
 		
 		var rock_multimesh_instance = MultiMeshInstance3D.new()
 		rock_multimesh_instance.multimesh = rock_multimesh
@@ -223,6 +240,7 @@ func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 		if current_terrain_far_mesh: current_terrain_far_mesh.call_deferred("queue_free")
 		current_terrain_far_mesh = new_terrain_mesh
 		is_swapping.far_mesh = false
+		terrain_gen_mutex.unlock()
 	
 	terrain_body.add_child.call_deferred(new_terrain_mesh)
 
