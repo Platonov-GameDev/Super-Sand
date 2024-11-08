@@ -22,6 +22,7 @@ var RIDGE_HEIGHT_NOISE_FREQUENCY := 0.003
 var WIND_CURRENT_COUNT := 1
 var ANGLE := 0.6
 var ROCK_SPACING := 10
+var RIDGE_STRETCH := 1.5
 
 var current_wind_boost := 0.0
 var terrain_seed: int
@@ -66,7 +67,7 @@ func reload():
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:
-	var noise_x = -z
+	var noise_x = -z / RIDGE_STRETCH
 	var noise_y = x
 	var ridge_noise_value = (1 + RIDGE_NOISE.get_noise_2d(noise_x, noise_y))
 	var ridge_height_noise_value = RIDGE_HEIGHT_NOISE.get_noise_2d(noise_x, noise_y) / 2 + 0.5
