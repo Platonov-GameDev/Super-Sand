@@ -44,7 +44,8 @@ angular_damp = 6.0
 script = ExtResource("2_jddbh")
 
 [node name="Camera3D" type="Camera3D" parent="BoardBase"]
-transform = Transform3D(1, 1.05514e-08, -1.15725e-08, -7.19671e-09, 0.965926, 0.258819, 1.39091e-08, -0.258819, 0.965926, 0, 3, 3)
+transform = Transform3D(1, 1.05514e-08, -1.15725e-08, -9.64887e-09, 0.997154, 0.0753963, 1.23351e-08, -0.0753963, 0.997154, 0, 2.17882, 3.02319)
+top_level = true
 fov = 90.0
 
 [node name="PushCooldownTimer" type="Timer" parent="BoardBase"]
@@ -75,6 +76,9 @@ node_a = NodePath("..")
 node_b = NodePath("../../Torso")
 solver_velocity_iterations = 2
 solver_position_iterations = 2
+
+[node name="CamArm" type="Node3D" parent="BoardBase"]
+transform = Transform3D(1, 1.05514e-08, -1.15725e-08, -9.64887e-09, 0.997154, 0.0753964, 1.23351e-08, -0.0753964, 0.997154, 0, 2.17882, 3.02319)
 
 [node name="RockReactor" type="RigidBody3D" parent="."]
 collision_layer = 8

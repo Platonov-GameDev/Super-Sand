@@ -112,7 +112,7 @@ func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 		range_min = -Global.LOW_POLY_MESH_RADIUS
 		range_max = Global.LOW_POLY_MESH_RADIUS
 		step = Global.FAR_MESH_STEP
-		
+	
 	# Add input fields
 	var input_array := PackedFloat32Array()
 	var heights_array := _create_terrain_heights_array(

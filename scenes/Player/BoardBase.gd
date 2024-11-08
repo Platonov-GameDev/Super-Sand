@@ -16,7 +16,7 @@ func _ready():
 	air_time_timer.timeout.connect(_on_air_time_timer_timeout)
 
 
-func _integrate_forces(state):	
+func _integrate_forces(state):
 	is_on_ground = true if get_contact_count() >= 2 else false
 	
 	if get_contact_count() >= 1 and is_in_air_for_long:
@@ -31,7 +31,8 @@ func _integrate_forces(state):
 	if is_on_ground:
 		var previous_linear_velocity = state.linear_velocity
 		
-		state.linear_velocity = previous_linear_velocity.limit_length(previous_linear_velocity.length() * 0.5)
+		state.linear_velocity = (
+			previous_linear_velocity.limit_length(previous_linear_velocity.length() * 0.5))
 		var drag_direction = Plane(global_basis.x).project(
 			Plane(global_basis.y).project(previous_linear_velocity)
 		).normalized()

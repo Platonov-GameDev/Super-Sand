@@ -9,6 +9,8 @@ class_name Player
 @onready var right_hand: RigidBody3D = $RightHand
 @onready var left_hand_joint: JoltGeneric6DOFJoint3D = $Torso/LeftHandJoint
 @onready var right_hand_joint: JoltGeneric6DOFJoint3D = $Torso/RightHandJoint
+@onready var cam_arm: Node3D = $BoardBase/CamArm
+@onready var camera: Camera3D = $BoardBase/Camera3D
 
 var LEAN_CONTROL := 20
 var TORSO_LEAN_AMOUNT := .5
@@ -27,6 +29,9 @@ var right_hand_rotation: Vector3
 func _ready():
 	Global.player = self
 	board_base.linear_velocity.z = -60
+	camera.global_position = global_position
+	camera.global_position.z += 20
+	camera.global_position.y += 3.5
 
 
 func _physics_process(_delta):
@@ -137,3 +142,21 @@ func _physics_process(_delta):
 	
 	if Input.is_action_just_pressed("Reload"):
 		Global.reload()
+	
+	var lerp_weight := 0.25
+	if board_base.is_on_ground:
+		cam_arm.position.y = lerp(cam_arm.position.y, 3.5, lerp_weight)
+	else:
+		cam_arm.position.y = lerp(cam_arm.position.y, 1.5, lerp_weight)
+	
+	camera.global_position = lerp(camera.global_position, cam_arm.global_position, lerp_weight)
+	var cam_lerp_direction = sign(((cam_arm.global_position - camera.global_position).project(-cam_arm.global_basis.z) * cam_arm.global_transform).z)
+	
+	if cam_lerp_direction < -1:
+		camera.global_position = cam_arm.global_position
+	
+	camera.quaternion = lerp(
+		Quaternion.from_euler(camera.global_rotation),
+		Quaternion.from_euler(cam_arm.global_rotation),
+		lerp_weight
+	)

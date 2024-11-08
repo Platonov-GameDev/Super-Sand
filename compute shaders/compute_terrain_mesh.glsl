@@ -16,7 +16,7 @@ void add_point_to_array(vec3 point, uint start_offset) {
 	data_buffer.data[start_offset + 2] = point.z;
 }
 
-void main() {	
+void main() {
 	uint heights_array_size = uint(data_buffer.data[0]);
 	uint heights_array_offset = 1;
 	
