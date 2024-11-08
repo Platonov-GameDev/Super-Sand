@@ -22,9 +22,8 @@ frequency = 1.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m2irb"]
 albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
-distance_fade_mode = 2
-distance_fade_min_distance = 200.0
-distance_fade_max_distance = 150.0
+distance_fade_min_distance = 1600.0
+distance_fade_max_distance = 1550.0
 
 [node name="Global" type="Node"]
 script = ExtResource("1_3ocrx")

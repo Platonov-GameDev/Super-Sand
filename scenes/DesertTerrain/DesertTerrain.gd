@@ -5,7 +5,8 @@ class_name DesertTerrain
 @export var wind_current_scene: PackedScene
 @export var rock_structure_scene: PackedScene
 @export var sand_near_material: StandardMaterial3D
-@export var sand_far_material: StandardMaterial3D
+@export var sand_far_shader: ShaderMaterial
+@export var rock_mesh: Mesh
 
 @onready var mesh_update_area: Area3D = $MeshUpdateArea
 @onready var mesh_update_shape: CollisionShape3D = $MeshUpdateArea/MeshUpdateShape
@@ -49,13 +50,15 @@ func _ready():
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
 	
-	sand_near_material.distance_fade_min_distance = Global.HIGH_POLY_MESH_RADIUS / 2.0
+	sand_near_material.distance_fade_min_distance = (
+		Global.HIGH_POLY_MESH_RADIUS - mesh_update_shape.shape.radius)
 	sand_near_material.distance_fade_max_distance = (
 		sand_near_material.distance_fade_min_distance - 50)
 	
-	sand_far_material.distance_fade_max_distance = Global.HIGH_POLY_MESH_RADIUS / 2.0 - 50
-	sand_far_material.distance_fade_min_distance = (
-		sand_near_material.distance_fade_min_distance - 100)
+	sand_far_shader.set_shader_parameter(
+		"near_to_far_seam_start", sand_near_material.distance_fade_min_distance)
+	sand_far_shader.set_shader_parameter(
+		"near_to_far_seam_end", sand_near_material.distance_fade_max_distance)
 
 
 func _on_mesh_update_area_body_exited(body):
@@ -177,9 +180,47 @@ func _swap_terrain_mesh(origin: Vector3, is_near_mesh: bool):
 		if current_terrain_near_mesh: current_terrain_near_mesh.queue_free()
 		current_terrain_near_mesh = new_terrain_mesh
 		is_swapping.near_mesh = false
-	else:
-		new_terrain_mesh.material_override = sand_far_material
-		if current_terrain_far_mesh: current_terrain_far_mesh.queue_free()
+	else:		
+		var rocks_origin = snapped(
+			Vector2(origin.x, origin.z),
+			Vector2(Global.STRUCTURE_SIZE, Global.STRUCTURE_SIZE)
+		)
+		var rock_transforms: PackedVector3Array = []
+		for x_offset in range(
+			range_min,
+			range_max,
+			Global.STRUCTURE_SIZE
+		):
+			for z_offset in range(
+				range_min,
+				range_max,
+				Global.STRUCTURE_SIZE
+			):
+				var structure_x_z = rocks_origin
+				structure_x_z.x += x_offset
+				structure_x_z.y += z_offset
+				
+				var structure_position = Global.get_terrain_point_from_x_z(
+					structure_x_z.x, structure_x_z.y)
+				
+				var rock_structure = rock_structure_scene.instantiate()
+				rock_structure.position = structure_position
+				rock_transforms.append_array(
+					rock_structure.generate_rock_mesh_transforms())
+		
+		var rock_multimesh = MultiMesh.new()
+		rock_multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		rock_multimesh.instance_count = rock_transforms.size() / 4.0
+		rock_multimesh.transform_array = rock_transforms
+		rock_multimesh.mesh = rock_mesh
+		
+		var rock_multimesh_instance = MultiMeshInstance3D.new()
+		rock_multimesh_instance.multimesh = rock_multimesh
+		rock_multimesh_instance.material_override = Global.rock_material
+		new_terrain_mesh.add_child(rock_multimesh_instance)
+		
+		new_terrain_mesh.material_override = sand_far_shader
+		if current_terrain_far_mesh: current_terrain_far_mesh.call_deferred("queue_free")
 		current_terrain_far_mesh = new_terrain_mesh
 		is_swapping.far_mesh = false
 	
@@ -269,7 +310,7 @@ func _swap_terrain_structures(origin: Vector3):
 			
 			var rock_structure = rock_structure_scene.instantiate()
 			rock_structure.position = structure_position
-			rock_structure.generate_rocks()
+			rock_structure.generate_rock_shapes()
 			new_terrain_structures.add_child(rock_structure)
 	
 	if current_terrain_structures: current_terrain_structures.queue_free()

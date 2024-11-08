@@ -1,23 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://bwwuqs51l3ucn"]
-
-[ext_resource type="Script" path="res://scenes/DesertTerrain/DesertTerrain.gd" id="1_p45mr"]
-[ext_resource type="PackedScene" uid="uid://dkgci7mnmnh8" path="res://scenes/WindCurrent/WindCurrent.tscn" id="2_ctrp8"]
-[ext_resource type="PackedScene" uid="uid://b4ulp31ubm80j" path="res://scenes/RockStructure/RockStructure.tscn" id="3_a137i"]
-[ext_resource type="Texture2D" uid="uid://bk10fb3l5a0p3" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="3_sr743"]
-[ext_resource type="Shader" path="res://shaders/far_terrain.gdshader" id="5_mh478"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cu3so"]
-render_priority = 1
-albedo_texture = ExtResource("3_sr743")
-uv1_triplanar = true
-uv1_world_triplanar = true
-distance_fade_mode = 2
-distance_fade_max_distance = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m06w6"]
-render_priority = 0
-shader = ExtResource("5_mh478")
-shader_parameter/albedo = Color(1, 0.54902, 0, 1)
+[gd_scene load_steps=4 format=4 uid="uid://deiot6e7o12lq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ttb20"]
 resource_name = "Nature_Pack_Palette"
@@ -38,7 +19,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_k14wd"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_gbnrh"]
 resource_name = "Stone_5_Stone_5"
 _surfaces = [{
 "aabb": AABB(-0.438893, -0.0439508, -0.333405, 0.837243, 0.977454, 0.702932),
@@ -56,50 +37,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_7ml3h")
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pyvpe"]
-friction = 0.4
-bounce = 0.9
-absorbent = true
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_76743"]
-height = 1000.0
-radius = 50.0
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_3wk4b"]
-height = 1000.0
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_wfd6q"]
-height = 1000.0
-
-[node name="DesertTerrain" type="Node3D"]
-script = ExtResource("1_p45mr")
-wind_current_scene = ExtResource("2_ctrp8")
-rock_structure_scene = ExtResource("3_a137i")
-sand_near_material = SubResource("StandardMaterial3D_cu3so")
-sand_far_shader = SubResource("ShaderMaterial_m06w6")
-rock_mesh = SubResource("ArrayMesh_k14wd")
-
-[node name="TerrainBody" type="StaticBody3D" parent="."]
-collision_mask = 0
-physics_material_override = SubResource("PhysicsMaterial_pyvpe")
-
-[node name="MeshUpdateArea" type="Area3D" parent="."]
-collision_layer = 0
-collision_mask = 2
-
-[node name="MeshUpdateShape" type="CollisionShape3D" parent="MeshUpdateArea"]
-shape = SubResource("CylinderShape3D_76743")
-
-[node name="ShapeUpdateArea" type="Area3D" parent="."]
-collision_layer = 0
-collision_mask = 2
-
-[node name="ShapeUpdateShape" type="CollisionShape3D" parent="ShapeUpdateArea"]
-shape = SubResource("CylinderShape3D_3wk4b")
-
-[node name="StructureUpdateArea" type="Area3D" parent="."]
-collision_layer = 0
-collision_mask = 2
-
-[node name="StructureUpdateShape" type="CollisionShape3D" parent="StructureUpdateArea"]
-shape = SubResource("CylinderShape3D_wfd6q")
+[node name="Stone_5" type="MeshInstance3D"]
+transform = Transform3D(60, 0, 0, 0, 60, 0, 0, 0, 60, 0, 0, 0)
+mesh = SubResource("ArrayMesh_gbnrh")
+skeleton = NodePath("")

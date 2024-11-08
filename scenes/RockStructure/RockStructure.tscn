@@ -1,8 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://b4ulp31ubm80j"]
+[gd_scene load_steps=4 format=3 uid="uid://b4ulp31ubm80j"]
 
 [ext_resource type="Script" path="res://scenes/RockStructure/RockStructure.gd" id="1_tcf1n"]
 [ext_resource type="PackedScene" uid="uid://l8huk2xnw7r8" path="res://scenes/Obstacle_Rock/Obstacle_Rock.tscn" id="2_lcwxg"]
+[ext_resource type="PackedScene" uid="uid://deiot6e7o12lq" path="res://scenes/Obstacle_Rock/RockMesh.tscn" id="3_aqv0b"]
 
 [node name="RockStructure" type="Node3D"]
 script = ExtResource("1_tcf1n")
 rock_scene = ExtResource("2_lcwxg")
+rock_mesh = ExtResource("3_aqv0b")

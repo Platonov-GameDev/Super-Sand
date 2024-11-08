@@ -5,11 +5,12 @@
 [ext_resource type="PackedScene" uid="uid://bwwuqs51l3ucn" path="res://scenes/DesertTerrain/DesertTerrain.tscn" id="4_l7y0p"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_muceq"]
-sky_top_color = Color(0.0588235, 0.678431, 0.901961, 1)
+sky_top_color = Color(0.431373, 0.678431, 0.901961, 1)
 sky_horizon_color = Color(0.836846, 0.934263, 0.993453, 1)
+sky_curve = 0.0416088
 ground_bottom_color = Color(0.431373, 0.678431, 0.901961, 1)
 ground_horizon_color = Color(0.836846, 0.934263, 0.993453, 1)
-ground_curve = 1.2364
+ground_curve = 0.0282843
 
 [sub_resource type="Sky" id="Sky_2bola"]
 sky_material = SubResource("ProceduralSkyMaterial_muceq")
@@ -18,6 +19,14 @@ sky_material = SubResource("ProceduralSkyMaterial_muceq")
 background_mode = 2
 sky = SubResource("Sky_2bola")
 ambient_light_source = 3
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(1, 1, 1, 1)
+fog_light_energy = 1.53
+fog_density = 1.0
+fog_aerial_perspective = 0.569
+fog_depth_begin = 200.0
+fog_depth_end = 1500.0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_aa2qk")
@@ -27,7 +36,6 @@ transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.651357, 0.425194, -0.628447, 0.00761447, 0.831863, 0.554929, 0.758734, 0.356671, -0.545077, 0, 0, 0)
-shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_qsacj")
