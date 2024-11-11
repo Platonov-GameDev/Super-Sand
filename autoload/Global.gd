@@ -30,6 +30,7 @@ var current_wind_boost := 0.0
 var terrain_seed: int
 var player: Player
 var main: Node3D
+var desert_terrain
 var is_player_resetting := false
 var current_score := 0:
 	set(value):
@@ -44,6 +45,13 @@ var current_combo := 0:
 		current_combo = value
 		current_combo_changed.emit(value)
 var touched_wind_current_ids: Array[String] = []
+var is_player_alive := true:
+	set(value):
+		is_player_alive = value
+		if not is_player_alive:
+			touched_wind_current_ids.clear()
+			current_combo = 0
+			accumulated_score = 0
 
 signal accumulated_score_changed(new_value: int)
 signal current_score_changed(new_value: int)
@@ -87,6 +95,11 @@ func reload():
 	player = player_scene.instantiate()
 	player.position = player_position
 	main.add_child(player)
+	desert_terrain.shape_update_area.global_position = player.board_base.global_position
+	
+	is_player_alive = true
+	current_score = 0
+	Global.is_player_resetting = false
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:

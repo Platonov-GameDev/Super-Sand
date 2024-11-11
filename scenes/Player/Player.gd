@@ -35,11 +35,18 @@ func _ready():
 
 
 func _physics_process(_delta):
-	Global.is_player_resetting = false
+	if Input.is_action_just_pressed("Reload"):
+		Global.reload()
+	
+	if not Global.is_player_alive: return
+	
+	## Movement
 	
 	var air_control_input = Input.get_vector("Move right", "Move left", "Move forward", "Move back")
 	board_base.apply_torque(board_base.global_basis.x * air_control_input.y * LEAN_CONTROL)
 	board_base.apply_torque(board_base.global_basis.z * air_control_input.x * LEAN_CONTROL)
+	
+	## Body animation
 	
 	var gyro_rotation = board_base.global_rotation.clampf(-0.5, 0.5)
 	if not board_base.is_on_ground:
@@ -140,8 +147,7 @@ func _physics_process(_delta):
 		right_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_LOWER, 0.0)
 		right_hand_joint.set_param_z(JoltGeneric6DOFJoint3D.PARAM_LINEAR_LIMIT_UPPER, 0.0)
 	
-	if Input.is_action_just_pressed("Reload"):
-		Global.reload()
+	## Camera interpolation
 	
 	var lerp_weight := 0.25
 	if board_base.is_on_ground:
@@ -160,3 +166,20 @@ func _physics_process(_delta):
 		Quaternion.from_euler(cam_arm.global_rotation),
 		lerp_weight
 	)
+	
+	## Crash
+	
+	if torso.get_contact_count() > 0:
+		Global.is_player_alive = false
+		torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+		torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+		torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+		torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		left_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		left_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		left_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		right_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		right_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+		right_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)

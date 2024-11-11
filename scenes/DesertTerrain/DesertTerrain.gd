@@ -56,10 +56,12 @@ func _ready():
 		"near_to_far_seam_start", sand_near_material.distance_fade_min_distance)
 	sand_far_shader.set_shader_parameter(
 		"near_to_far_seam_end", sand_near_material.distance_fade_max_distance)
+	
+	Global.desert_terrain = self
 
 
 func _on_mesh_update_area_body_exited(body):
-	if Global.is_player_resetting: return
+	if Global.is_player_resetting or not Global.is_player_alive: return
 	
 	mesh_update_area.global_position = body.global_position
 	
@@ -68,7 +70,7 @@ func _on_mesh_update_area_body_exited(body):
 
 
 func _on_shape_update_area_body_exited(body):
-	if Global.is_player_resetting: return
+	if Global.is_player_resetting or not Global.is_player_alive: return
 	
 	shape_update_area.global_position = body.global_position
 	
@@ -79,7 +81,7 @@ func _on_shape_update_area_body_exited(body):
 
 
 func _on_structure_update_area_body_exited(body):
-	if Global.is_player_resetting: return
+	if Global.is_player_resetting or not Global.is_player_alive: return
 	
 	structure_update_area.global_position = body.global_position
 	
@@ -356,7 +358,6 @@ func _create_terrain_heights_array(
 				Global.get_terrain_height_from_x_z(height_position.x, height_position.z))
 	
 	return heights_array
-	
 
 
 func _exit_tree() -> void:
