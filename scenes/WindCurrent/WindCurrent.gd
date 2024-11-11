@@ -71,3 +71,6 @@ func _physics_process(_delta):
 	if distance_to_player <= 20:
 		var boost := pow((20.0 - distance_to_player) / 20.0, 3)
 		Global.current_wind_boost += boost
+		var score_to_accumulate = int(boost * 10)
+		if score_to_accumulate > 0:
+			Global.accumulate_score(score_to_accumulate, str(position))

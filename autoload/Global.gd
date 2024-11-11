@@ -8,6 +8,8 @@ extends Node
 @export var player_scene: PackedScene
 @export var rock_material: StandardMaterial3D
 
+@onready var score_accumulation_reset_timer = $ScoreAccumulationResetTimer
+
 var HIGH_POLY_MESH_RADIUS := 800
 var LOW_POLY_MESH_RADIUS := 1600
 var ACTIVE_STRUCTURE_RADIUS := 800
@@ -29,9 +31,30 @@ var terrain_seed: int
 var player: Player
 var main: Node3D
 var is_player_resetting := false
+var current_score := 0:
+	set(value):
+		current_score = value
+		current_score_changed.emit(value)
+var accumulated_score := 0:
+	set(value):
+		accumulated_score = value
+		accumulated_score_changed.emit(value)
+var current_combo := 0:
+	set(value):
+		current_combo = value
+		current_combo_changed.emit(value)
+var touched_wind_current_ids: Array[String] = []
+
+signal accumulated_score_changed(new_value: int)
+signal current_score_changed(new_value: int)
+signal current_combo_changed(new_value: int)
+signal started_accumulating_score()
+signal stopped_accumulating_score()
 
 
 func _ready():
+	score_accumulation_reset_timer.timeout.connect(_on_score_accumulation_reset_timer_timeout)
+	
 	terrain_seed = int(Time.get_unix_time_from_system())
 	
 	RIDGE_NOISE.seed = terrain_seed
@@ -119,3 +142,22 @@ func add_quad_to_normals_array(
 	array.append(normal2)
 	array.append(normal2)
 	array.append(normal2)
+
+
+func accumulate_score(value: int, wind_current_id: String):
+	accumulated_score += value
+	started_accumulating_score.emit()
+	score_accumulation_reset_timer.start()
+	
+	if not touched_wind_current_ids.has(wind_current_id):
+		touched_wind_current_ids.append(wind_current_id)
+		current_combo = touched_wind_current_ids.size()
+
+
+func _on_score_accumulation_reset_timer_timeout():
+	current_score += accumulated_score * current_combo
+	accumulated_score = 0
+	stopped_accumulating_score.emit()
+	
+	touched_wind_current_ids.clear()
+	current_combo = 0

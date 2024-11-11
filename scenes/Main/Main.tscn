@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cxtgiqwlcw52k"]
+[gd_scene load_steps=8 format=3 uid="uid://cxtgiqwlcw52k"]
 
 [ext_resource type="Script" path="res://scenes/Main/Main.gd" id="1_aa2qk"]
 [ext_resource type="PackedScene" uid="uid://ct6nrndmcmls" path="res://scenes/Player/Player.tscn" id="2_e3xip"]
 [ext_resource type="PackedScene" uid="uid://bwwuqs51l3ucn" path="res://scenes/DesertTerrain/DesertTerrain.tscn" id="4_l7y0p"]
+[ext_resource type="PackedScene" uid="uid://xydksrvyasta" path="res://scenes/UIPlay/UIPlay.tscn" id="4_rya41"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_muceq"]
 sky_top_color = Color(0.431373, 0.678431, 0.901961, 1)
@@ -41,3 +42,5 @@ transform = Transform3D(-0.651357, 0.425194, -0.628447, 0.00761447, 0.831863, 0.
 environment = SubResource("Environment_qsacj")
 
 [node name="DesertTerrain" parent="." instance=ExtResource("4_l7y0p")]
+
+[node name="UiPlay" parent="." instance=ExtResource("4_rya41")]

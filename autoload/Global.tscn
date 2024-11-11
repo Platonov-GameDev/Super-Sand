@@ -33,3 +33,7 @@ STRUCTURE_NOISE = SubResource("FastNoiseLite_0tq7o")
 ROCK_NOISE = SubResource("FastNoiseLite_w0ivf")
 player_scene = ExtResource("2_3opj0")
 rock_material = SubResource("StandardMaterial3D_m2irb")
+
+[node name="ScoreAccumulationResetTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
