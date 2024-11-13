@@ -2,6 +2,8 @@ extends Node3D
 class_name Player
 
 
+@export var player_shader: ShaderMaterial
+
 @onready var board_base = $BoardBase
 @onready var torso_joint: JoltGeneric6DOFJoint3D = $BoardBase/TorsoJoint
 @onready var torso: RigidBody3D = $Torso
@@ -11,6 +13,11 @@ class_name Player
 @onready var right_hand_joint: JoltGeneric6DOFJoint3D = $Torso/RightHandJoint
 @onready var cam_arm: Node3D = $BoardBase/CamArm
 @onready var camera: Camera3D = $BoardBase/Camera3D
+@onready var board_mesh = $BoardBase/BoardMeshInstance3D
+@onready var body_mesh = $Torso/BodyMeshInstance3D
+@onready var left_hand_mesh = $LeftHand/MeshInstance3D
+@onready var right_hand_mesh = $RightHand/MeshInstance3D
+@onready var head_mesh = $Torso/HeadMesh
 
 var LEAN_CONTROL := 20
 var TORSO_LEAN_AMOUNT := .5
@@ -32,6 +39,12 @@ func _ready():
 	camera.global_position = global_position
 	camera.global_position.z += 20
 	camera.global_position.y += 3.5
+	
+	board_mesh.material_override = player_shader
+	body_mesh.material_override = player_shader
+	left_hand_mesh.material_override = player_shader
+	right_hand_mesh.material_override = player_shader
+	head_mesh.material_override = player_shader
 
 
 func _physics_process(_delta):

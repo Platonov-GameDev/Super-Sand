@@ -6,7 +6,7 @@ extends Node
 @export var STRUCTURE_NOISE: FastNoiseLite
 @export var ROCK_NOISE: FastNoiseLite
 @export var player_scene: PackedScene
-@export var rock_material: StandardMaterial3D
+@export var rock_shader: ShaderMaterial
 
 @onready var score_accumulation_reset_timer = $ScoreAccumulationResetTimer
 
@@ -72,9 +72,6 @@ func _ready():
 	
 	RIDGE_NOISE.frequency = RIDGE_NOISE_FREQUENCY
 	RIDGE_HEIGHT_NOISE.frequency = RIDGE_HEIGHT_NOISE_FREQUENCY
-	
-	rock_material.distance_fade_min_distance = ACTIVE_STRUCTURE_RADIUS / 4.0
-	rock_material.distance_fade_max_distance = rock_material.distance_fade_min_distance - 50
 
 
 func _physics_process(_delta):

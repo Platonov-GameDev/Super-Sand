@@ -1,7 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://ct6nrndmcmls"]
+[gd_scene load_steps=14 format=3 uid="uid://ct6nrndmcmls"]
 
 [ext_resource type="Script" path="res://scenes/Player/Player.gd" id="1_j606p"]
 [ext_resource type="Script" path="res://scenes/Player/BoardBase.gd" id="2_jddbh"]
+[ext_resource type="Shader" path="res://shaders/player.gdshader" id="2_ylehy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tqh4e"]
+render_priority = 0
+shader = ExtResource("2_ylehy")
+shader_parameter/albedo = Color(0, 1, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ewnj3"]
 size = Vector3(0.6, 0.1, 2)
@@ -34,6 +40,7 @@ size = Vector3(0.2, 0.1, 0.1)
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_j606p")
+player_shader = SubResource("ShaderMaterial_tqh4e")
 
 [node name="BoardBase" type="RigidBody3D" parent="."]
 collision_layer = 2

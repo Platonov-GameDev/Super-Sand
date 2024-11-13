@@ -4,7 +4,7 @@ class_name DesertTerrain
 
 @export var wind_current_scene: PackedScene
 @export var rock_structure_scene: PackedScene
-@export var sand_near_material: StandardMaterial3D
+@export var sand_near_shader: ShaderMaterial
 @export var sand_far_shader: ShaderMaterial
 @export var rock_mesh: Mesh
 
@@ -47,15 +47,17 @@ func _ready():
 	thread_pool_task_ids.append(
 		WorkerThreadPool.add_task(_swap_terrain_structures.bind(Vector3.ZERO)))
 	
-	sand_near_material.distance_fade_min_distance = (
-		Global.HIGH_POLY_MESH_RADIUS - mesh_update_shape.shape.radius)
-	sand_near_material.distance_fade_max_distance = (
-		sand_near_material.distance_fade_min_distance - 50)
+	var seam_edge_1 = Global.HIGH_POLY_MESH_RADIUS - mesh_update_shape.shape.radius - 50
+	var seam_edge_2 = Global.HIGH_POLY_MESH_RADIUS - mesh_update_shape.shape.radius
+	sand_near_shader.set_shader_parameter(
+		"seam_start", seam_edge_1)
+	sand_near_shader.set_shader_parameter(
+		"seam_end", seam_edge_2)
 	
 	sand_far_shader.set_shader_parameter(
-		"near_to_far_seam_start", sand_near_material.distance_fade_min_distance)
+		"seam_start", seam_edge_2)
 	sand_far_shader.set_shader_parameter(
-		"near_to_far_seam_end", sand_near_material.distance_fade_max_distance)
+		"seam_end", seam_edge_1)
 	
 	Global.desert_terrain = self
 
@@ -193,7 +195,7 @@ func _swap_terrain_mesh(
 	
 	if is_near_mesh:
 		terrain_gen_mutex.lock()
-		new_terrain_mesh.material_override = sand_near_material
+		new_terrain_mesh.material_override = sand_near_shader
 		terrain_gen_mutex.unlock()
 		if current_terrain_near_mesh: current_terrain_near_mesh.queue_free()
 		current_terrain_near_mesh = new_terrain_mesh
@@ -235,7 +237,7 @@ func _swap_terrain_mesh(
 		
 		var rock_multimesh_instance = MultiMeshInstance3D.new()
 		rock_multimesh_instance.multimesh = rock_multimesh
-		rock_multimesh_instance.material_override = Global.rock_material
+		rock_multimesh_instance.material_override = Global.rock_shader
 		new_terrain_mesh.add_child(rock_multimesh_instance)
 		
 		new_terrain_mesh.material_override = sand_far_shader

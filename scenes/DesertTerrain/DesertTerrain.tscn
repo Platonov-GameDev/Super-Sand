@@ -1,23 +1,23 @@
-[gd_scene load_steps=15 format=4 uid="uid://bwwuqs51l3ucn"]
+[gd_scene load_steps=14 format=4 uid="uid://bwwuqs51l3ucn"]
 
 [ext_resource type="Script" path="res://scenes/DesertTerrain/DesertTerrain.gd" id="1_p45mr"]
 [ext_resource type="PackedScene" uid="uid://dkgci7mnmnh8" path="res://scenes/WindCurrent/WindCurrent.tscn" id="2_ctrp8"]
 [ext_resource type="PackedScene" uid="uid://b4ulp31ubm80j" path="res://scenes/RockStructure/RockStructure.tscn" id="3_a137i"]
-[ext_resource type="Texture2D" uid="uid://bk10fb3l5a0p3" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="3_sr743"]
-[ext_resource type="Shader" path="res://shaders/far_terrain.gdshader" id="5_mh478"]
+[ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="5_mh478"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cu3so"]
-render_priority = 1
-albedo_texture = ExtResource("3_sr743")
-uv1_triplanar = true
-uv1_world_triplanar = true
-distance_fade_mode = 2
-distance_fade_max_distance = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m06w6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrotv"]
 render_priority = 0
 shader = ExtResource("5_mh478")
 shader_parameter/albedo = Color(1, 0.54902, 0, 1)
+shader_parameter/seam_start = 200.0
+shader_parameter/seam_end = 150.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m06w6"]
+render_priority = 1
+shader = ExtResource("5_mh478")
+shader_parameter/albedo = Color(1, 0.54902, 0, 1)
+shader_parameter/seam_start = 200.0
+shader_parameter/seam_end = 150.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ttb20"]
 resource_name = "Nature_Pack_Palette"
@@ -75,7 +75,7 @@ height = 1000.0
 script = ExtResource("1_p45mr")
 wind_current_scene = ExtResource("2_ctrp8")
 rock_structure_scene = ExtResource("3_a137i")
-sand_near_material = SubResource("StandardMaterial3D_cu3so")
+sand_near_shader = SubResource("ShaderMaterial_rrotv")
 sand_far_shader = SubResource("ShaderMaterial_m06w6")
 rock_mesh = SubResource("ArrayMesh_k14wd")
 
