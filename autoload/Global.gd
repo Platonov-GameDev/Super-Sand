@@ -22,47 +22,28 @@ var VERTICE_SIZE := HIGH_POLY_MESH_RADIUS * RESOLUTION
 var RIDGE_NOISE_FREQUENCY := 0.003
 var RIDGE_HEIGHT_NOISE_FREQUENCY := 0.003
 var WIND_CURRENT_COUNT := 1
-var ANGLE := 0.6
+# var ANGLE := 0.6
+var ANGLE := 0.0
 var ROCK_SPACING := 10
-var RIDGE_STRETCH := 1.5
+# var RIDGE_STRETCH := 1.5
+var RIDGE_STRETCH := 1.0
 
-var current_wind_boost := 0.0
 var terrain_seed: int
 var player: Player
 var main: Node3D
 var desert_terrain
 var is_player_resetting := false
-var current_score := 0:
+var is_player_alive := true
+var nitro_amount := 5.0:
 	set(value):
-		current_score = value
-		current_score_changed.emit(value)
-var accumulated_score := 0:
-	set(value):
-		accumulated_score = value
-		accumulated_score_changed.emit(value)
-var current_combo := 0:
-	set(value):
-		current_combo = value
-		current_combo_changed.emit(value)
-var touched_wind_current_ids: Array[String] = []
-var is_player_alive := true:
-	set(value):
-		is_player_alive = value
-		if not is_player_alive:
-			touched_wind_current_ids.clear()
-			current_combo = 0
-			accumulated_score = 0
+		nitro_amount = value
+		nitro_amount_changed.emit(value)
 
-signal accumulated_score_changed(new_value: int)
-signal current_score_changed(new_value: int)
-signal current_combo_changed(new_value: int)
-signal started_accumulating_score()
-signal stopped_accumulating_score()
+
+signal nitro_amount_changed(new_nitro_amount)
 
 
 func _ready():
-	score_accumulation_reset_timer.timeout.connect(_on_score_accumulation_reset_timer_timeout)
-	
 	terrain_seed = int(Time.get_unix_time_from_system())
 	
 	RIDGE_NOISE.seed = terrain_seed
@@ -75,10 +56,6 @@ func _ready():
 	
 	rock_material.distance_fade_min_distance = ACTIVE_STRUCTURE_RADIUS / 4.0
 	rock_material.distance_fade_max_distance = rock_material.distance_fade_min_distance - 50
-
-
-func _physics_process(_delta):
-	current_wind_boost = 0
 
 
 func reload():
@@ -98,8 +75,9 @@ func reload():
 	desert_terrain.shape_update_area.global_position = player.board_base.global_position
 	
 	is_player_alive = true
-	current_score = 0
 	Global.is_player_resetting = false
+	
+	nitro_amount = 5
 
 
 func get_terrain_height_from_x_z(x: float, z: float) -> float:
@@ -155,22 +133,3 @@ func add_quad_to_normals_array(
 	array.append(normal2)
 	array.append(normal2)
 	array.append(normal2)
-
-
-func accumulate_score(value: int, wind_current_id: String):
-	accumulated_score += value
-	started_accumulating_score.emit()
-	score_accumulation_reset_timer.start()
-	
-	if not touched_wind_current_ids.has(wind_current_id):
-		touched_wind_current_ids.append(wind_current_id)
-		current_combo = touched_wind_current_ids.size()
-
-
-func _on_score_accumulation_reset_timer_timeout():
-	current_score += accumulated_score * current_combo
-	accumulated_score = 0
-	stopped_accumulating_score.emit()
-	
-	touched_wind_current_ids.clear()
-	current_combo = 0

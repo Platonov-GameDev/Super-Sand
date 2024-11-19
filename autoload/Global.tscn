@@ -11,7 +11,6 @@ cellular_distance_function = 1
 cellular_return_type = 6
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_g5foq"]
-noise_type = 0
 frequency = 0.04
 fractal_type = 0
 

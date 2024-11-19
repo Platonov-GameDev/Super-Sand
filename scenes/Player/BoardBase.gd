@@ -28,6 +28,7 @@ func _integrate_forces(state):
 	else:
 		air_time_timer.stop()
 	
+	
 	if is_on_ground:
 		var previous_linear_velocity = state.linear_velocity
 		
@@ -37,9 +38,6 @@ func _integrate_forces(state):
 			Plane(global_basis.y).project(previous_linear_velocity)
 		).normalized()
 		state.linear_velocity += drag_direction * previous_linear_velocity.length() * 0.5
-	
-	state.linear_velocity = (state.linear_velocity.normalized() *
-		(state.linear_velocity.length() + Global.current_wind_boost * WIND_BOOST))
 	
 	was_on_ground = is_on_ground
 

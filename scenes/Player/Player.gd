@@ -11,12 +11,16 @@ class_name Player
 @onready var right_hand_joint: JoltGeneric6DOFJoint3D = $Torso/RightHandJoint
 @onready var cam_arm: Node3D = $BoardBase/CamArm
 @onready var camera: Camera3D = $BoardBase/Camera3D
+@onready var nitro_mesh: MeshInstance3D = $BoardBase/NitroMesh
+@onready var maneuvering_thrusters: Node3D = $BoardBase/ManeuveringThrusters
 
 var LEAN_CONTROL := 20
 var TORSO_LEAN_AMOUNT := .5
 var SITDOWN_AMOUNT := .1
 var HAND_BALANCING_AMOUNT := 1.0
 var AIR_HAND_DRAG := 1
+var NITRO_BOOST := 100
+var MANEUVERING_AMOUNT := 20
 
 var torso_offset: Vector3
 var left_hand_offset: Vector3
@@ -32,9 +36,11 @@ func _ready():
 	camera.global_position = global_position
 	camera.global_position.z += 20
 	camera.global_position.y += 3.5
+	
+	nitro_mesh.visible = false
 
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if Input.is_action_just_pressed("Reload"):
 		Global.reload()
 	
@@ -169,17 +175,38 @@ func _physics_process(_delta):
 	
 	## Crash
 	
-	if torso.get_contact_count() > 0:
-		Global.is_player_alive = false
-		torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
-		torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
-		torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
-		torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		left_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		left_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		left_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		right_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		right_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-		right_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# if torso.get_contact_count() > 0:
+	# 	Global.is_player_alive = false
+	# 	torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+	# 	torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+	# 	torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_LINEAR_LIMIT, false)
+	# 	torso_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	torso_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	torso_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	left_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	left_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	left_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	right_hand_joint.set_flag_x(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	right_hand_joint.set_flag_y(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	# 	right_hand_joint.set_flag_z(JoltGeneric6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
+	
+	## Nitro
+	
+	if board_base.is_on_ground and Global.nitro_amount > 0:
+		board_base.apply_central_force(NITRO_BOOST * -board_base.global_basis.z)
+		Global.nitro_amount = clampf(Global.nitro_amount - delta, 0, 5)
+		nitro_mesh.visible = true
+	elif not board_base.is_on_ground:
+		Global.nitro_amount = clampf(Global.nitro_amount + delta, 0, 5)
+		nitro_mesh.visible = false
+	elif Global.nitro_amount == 0:
+		nitro_mesh.visible = false
+	
+	## Maneuvering
+	
+	if board_base.is_on_ground:
+		maneuvering_thrusters.visible = false
+	else:
+		board_base.apply_central_force(-board_base.global_basis.z * MANEUVERING_AMOUNT)
+		maneuvering_thrusters.visible = true
+	
