@@ -1,8 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxtgiqwlcw52k"]
+[gd_scene load_steps=16 format=3 uid="uid://cxtgiqwlcw52k"]
 
 [ext_resource type="Script" path="res://scenes/Main/Main.gd" id="1_aa2qk"]
 [ext_resource type="PackedScene" uid="uid://ct6nrndmcmls" path="res://scenes/Player/Player.tscn" id="2_e3xip"]
-[ext_resource type="PackedScene" uid="uid://bwwuqs51l3ucn" path="res://scenes/DesertTerrain/DesertTerrain.tscn" id="4_l7y0p"]
+[ext_resource type="Texture2D" uid="uid://c6p7ddphr1hys" path="res://addons/kenney_prototype_textures/orange/texture_02.png" id="4_cnvkq"]
 [ext_resource type="PackedScene" uid="uid://xydksrvyasta" path="res://scenes/UIPlay/UIPlay.tscn" id="4_rya41"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_muceq"]
@@ -29,11 +29,38 @@ fog_aerial_perspective = 0.569
 fog_depth_begin = 200.0
 fog_depth_end = 1500.0
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_rn6vk"]
+friction = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_myutl"]
+size = Vector3(10000, 10, 10000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kgc0f"]
+albedo_texture = ExtResource("4_cnvkq")
+uv1_scale = Vector3(0.07, 0.07, 0.07)
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_wfkkg"]
+material = SubResource("StandardMaterial3D_kgc0f")
+size = Vector3(10000, 10, 10000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vvydi"]
+size = Vector3(30, 30, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_07mj8"]
+size = Vector3(30, 30, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jjif7"]
+size = Vector3(30, 70, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vgpr6"]
+size = Vector3(30, 70, 100)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_aa2qk")
 
 [node name="Player" parent="." instance=ExtResource("2_e3xip")]
-transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 11.7427, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.651357, 0.425194, -0.628447, 0.00761447, 0.831863, 0.554929, 0.758734, 0.356671, -0.545077, 0, 0, 0)
@@ -42,6 +69,33 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_qsacj")
 
-[node name="DesertTerrain" parent="." instance=ExtResource("4_l7y0p")]
-
 [node name="UiPlay" parent="." instance=ExtResource("4_rya41")]
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_rn6vk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_myutl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_wfkkg")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(-1, 4.37114e-08, 7.57103e-08, 0, 0.866025, -0.5, -8.74228e-08, -0.5, -0.866025, -74, -2, -47)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_vvydi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_07mj8")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(-1, 4.37114e-08, 7.57103e-08, 4.37114e-08, 1, 0, -7.57103e-08, 0, -1, -46, 44, -20)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+shape = SubResource("BoxShape3D_jjif7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3"]
+transform = Transform3D(1, 0, 0, -2.50556e-22, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_vgpr6")

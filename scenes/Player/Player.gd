@@ -194,7 +194,7 @@ func _physics_process(delta):
 	
 	if board_base.is_on_ground and Global.nitro_amount > 0:
 		board_base.apply_central_force(NITRO_BOOST * -board_base.global_basis.z)
-		Global.nitro_amount = clampf(Global.nitro_amount - delta, 0, 5)
+		# Global.nitro_amount = clampf(Global.nitro_amount - delta, 0, 5)
 		nitro_mesh.visible = true
 	elif not board_base.is_on_ground:
 		Global.nitro_amount = clampf(Global.nitro_amount + delta, 0, 5)
